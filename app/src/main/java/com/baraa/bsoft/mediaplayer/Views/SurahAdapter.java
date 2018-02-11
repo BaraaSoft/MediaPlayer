@@ -14,8 +14,7 @@ import android.widget.TextView;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 
-import java.util.ArrayList;
-
+import io.realm.RealmResults;
 import mbanje.kurt.fabbutton.FabButton;
 
 /**
@@ -23,7 +22,7 @@ import mbanje.kurt.fabbutton.FabButton;
  */
 
 public class SurahAdapter extends ArrayAdapter {
-    private ArrayList<Surah> surahslst;
+    private RealmResults<Surah> surahslst;
     private Context context;
     private Surah surah;
     private int resource;
@@ -35,7 +34,7 @@ public class SurahAdapter extends ArrayAdapter {
     public void setmPlayListListener(PlayListListener playListListener){
         mPlayListListener = playListListener;
     }
-    public SurahAdapter(@NonNull Context context, @LayoutRes int resource, ArrayList mlist) {
+    public SurahAdapter(@NonNull Context context, @LayoutRes int resource, RealmResults<Surah> mlist) {
         super(context, resource);
         surahslst = mlist;
         this.context = context;

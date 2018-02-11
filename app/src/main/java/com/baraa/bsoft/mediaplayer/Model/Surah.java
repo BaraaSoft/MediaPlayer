@@ -1,18 +1,33 @@
 package com.baraa.bsoft.mediaplayer.Model;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by baraa on 01/01/2018.
  */
 
-public class Surah {
+public class Surah extends RealmObject{
+
+    @PrimaryKey
+    private String key;
+    private String artistKey;
+
+    private String localPath;
     private String title;
     private String url;
     private int number;
 
-    public Surah(String title, String url, int number) {
+    public Surah(){
+        super();
+    }
+
+    public Surah(String title, String url, int number,String artistKey) {
+        this();
         this.title = title;
         this.url = url;
         this.number = number;
+        this.setKey(number+artistKey);
     }
 
     public String getTitle() {
@@ -37,5 +52,29 @@ public class Surah {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getArtistKey() {
+        return artistKey;
+    }
+
+    public void setArtistKey(String artistKey) {
+        this.artistKey = artistKey;
     }
 }
