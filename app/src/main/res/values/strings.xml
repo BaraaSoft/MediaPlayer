@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Media Player</string>
+    <string-array name="surahs">
+        <item>Al-Fatihah</item>
+        <item>Al-Baqarah</item>
+        <item>Ali \'Imran</item>
+        <item>An-Nisa</item>
+        <item>Al-Ma\'idah</item>
+        <item>Al-An\'am</item>
+        <item>Al-A\'raf</item>
+        <item>Al-Anfal</item>
+        <item>At-Tawbah</item>
+        <item>Yunus</item>
+    </string-array>
+    <string name="base_url">https://quran.islamway.net/quran3/324/</string>
+</resources>

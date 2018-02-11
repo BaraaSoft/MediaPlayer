@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:id="@+id/cvMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:backgroundTint="@color/colorDarkSilent"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorIcons"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Al Fatiha" />
+            <view
+                class="mbanje.kurt.fabbutton.FabButton"
+                android:id="@+id/btnPlayLst"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:color="@color/colorAccent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_play_circle_outline_white_24dp"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:max="100"
+                app:fbb_autoStart="true"
+                app:fbb_progressColor="@color/colorPrimary"
+                app:fbb_progressWidthRatio="0.2"
+                app:fbb_endBitmap="@drawable/ic_pause_circle_outline_white_24dp"
+                app:fbb_showEndBitmap="true"
+                />
+            <view
+                class="mbanje.kurt.fabbutton.FabButton"
+                android:id="@+id/btnDownloadLst"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:color="@color/colorAccent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@id/btnPlayLst"
+                android:src="@drawable/ic_file_download_white_24dp"
+                android:visibility="visible"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:max="100"
+                app:fbb_autoStart="true"
+                app:fbb_progressColor="@color/colorPrimary"
+                app:fbb_progressWidthRatio="0.2"
+                app:fbb_endBitmap="@drawable/ic_file_download_white_24dp"
+                app:fbb_showEndBitmap="true"
+                />
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btnPlayLst"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:background="@color/colorDarkSilent"-->
+                <!--android:src="@drawable/ic_play_circle_outline_white_24dp" />-->
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
