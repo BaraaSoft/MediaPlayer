@@ -1,4 +1,4 @@
-package com.baraa.bsoft.mediaplayer;
+package com.baraa.bsoft.mediaplayer.Activities;
 
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
+import com.baraa.bsoft.mediaplayer.R;
+import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
 import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
 
 import java.io.IOException;
@@ -74,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
             String b = String.format("%03d",i+1);
             String x = strBuilder.append(b).append(".mp3").toString();
             Surah item = new Surah(surahArry[i],x,i,artistKey);
-            //Log.d(TAG, "builSurahList:"+x);
             surahs.add(item);
         }
         DAL.getInstance().setContext(this).InsertListToDB(surahs);

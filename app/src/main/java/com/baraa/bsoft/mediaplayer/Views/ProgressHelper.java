@@ -1,4 +1,4 @@
-package com.baraa.bsoft.mediaplayer;
+package com.baraa.bsoft.mediaplayer.Views;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -10,10 +10,10 @@ import mbanje.kurt.fabbutton.FabButton;
  */
 
 public class ProgressHelper {
-    private int currentProgress = 0;
-    private Handler handle=new Handler();
     private final FabButton button;
     private final Activity activity;
+    private int currentProgress = 0;
+    private Handler handle=new Handler();
     private  boolean resume;
 
     public ProgressHelper(FabButton button, Activity activity) {
@@ -38,27 +38,6 @@ public class ProgressHelper {
             }
         };
     }
-    class  mythread extends  Thread{
-        public void run() {
-            while(resume){
-                currentProgress += 25;
-                try {
-                    Thread.sleep(50);
-
-                }  catch (Exception e) {}
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        button.setProgress(currentProgress);
-                        if(currentProgress >= 100){
-                            button.setProgress(0);
-                            currentProgress = 0;
-                        }
-                    }
-                });
-
-            }
-        }}
 
     private Runnable getRunnableIndeterminate(final Activity activity){
         return new Runnable() {
@@ -87,6 +66,7 @@ public class ProgressHelper {
         mythread my= new mythread();
         my.start();
     }
+
     public void stopIndeterminate() {
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -109,4 +89,26 @@ public class ProgressHelper {
     public void setCurrentProgress(int currentProgress) {
         this.currentProgress = currentProgress;
     }
+
+    class  mythread extends  Thread{
+        public void run() {
+            while(resume){
+                currentProgress += 25;
+                try {
+                    Thread.sleep(50);
+
+                }  catch (Exception e) {}
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        button.setProgress(currentProgress);
+                        if(currentProgress >= 100){
+                            button.setProgress(0);
+                            currentProgress = 0;
+                        }
+                    }
+                });
+
+            }
+        }}
 }

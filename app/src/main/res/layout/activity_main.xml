@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.baraa.bsoft.mediaplayer.MainActivity"
-    android:background="@color/colorDarkVeryLight">
+    android:background="@color/colorDarkVeryLight"
+    tools:context="com.baraa.bsoft.mediaplayer.Activities.MainActivity">
 
     <LinearLayout
         android:id="@+id/llStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop ="true"
-        android:background="@color/colorDarkSilent">
+        android:background="@color/colorDarkSilent"
+        android:orientation="vertical"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp">
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
@@ -27,47 +27,47 @@
         android:id="@+id/llMediaBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/llStatus"
+        android:layout_toEndOf="@id/llStatus"
+        android:background="@color/colorDarkSilentLight"
         android:orientation="horizontal"
         android:paddingLeft="54dp"
         android:paddingRight="54dp"
-        android:weightSum="3"
-        android:layout_toEndOf="@id/llStatus"
-        android:layout_below="@+id/llStatus"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorDarkSilentLight">
+        android:weightSum="3">
         <ImageButton
             android:id="@+id/btnBackward"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
-            android:src="@drawable/ic_fast_rewind_white_24dp"
+            android:layout_weight="1"
             android:background="@drawable/media_button"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:src="@drawable/ic_fast_rewind_white_24dp"/>
         <ImageButton
             android:id="@+id/btnPlay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_play_circle_outline_white_24dp"
-            android:layout_weight="1"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:background="@drawable/media_button"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:src="@drawable/ic_play_circle_outline_white_24dp"/>
 
         <ImageButton
             android:id="@+id/btnForward"
             android:layout_width="0dp"
-            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_fast_forward_white_24dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/media_button"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:src="@drawable/ic_fast_forward_white_24dp"/>
     </LinearLayout>
     <ListView
         android:id="@+id/lvClips"
-        android:layout_below="@+id/llMediaBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llMediaBtn"/>
 </RelativeLayout>
