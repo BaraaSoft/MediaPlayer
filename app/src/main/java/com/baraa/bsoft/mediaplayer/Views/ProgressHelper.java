@@ -12,14 +12,18 @@ import mbanje.kurt.fabbutton.FabButton;
 public class ProgressHelper {
     private final FabButton button;
     private final Activity activity;
-    private int currentProgress = 0;
+    private double currentProgress = 0;
     private Handler handle=new Handler();
     private  boolean resume;
 
-    public ProgressHelper(FabButton button, Activity activity) {
+    private String mKey;
+
+    public ProgressHelper(FabButton button, Activity activity,String key) {
         this.button = button;
         this.activity = activity;
+        this.mKey = key;
     }
+
 
     private Runnable getRunnable(final Activity activity){
         return new Runnable() {
@@ -29,9 +33,9 @@ public class ProgressHelper {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        button.setProgress(currentProgress);
+                        button.setProgress((float) currentProgress);
                         if(currentProgress <= 100){
-                            handle.postDelayed(getRunnable(activity),50);
+                            handle.postDelayed(getRunnable(activity),100);
                         }
                     }
                 });
@@ -62,7 +66,7 @@ public class ProgressHelper {
         currentProgress = 0;
         resume = true;
         button.showProgress(true);
-        button.setProgress(currentProgress);
+        button.setProgress((float) currentProgress);
         mythread my= new mythread();
         my.start();
     }
@@ -82,11 +86,11 @@ public class ProgressHelper {
         button.showShadow(false);
         currentProgress = 0;
         button.showProgress(true);
-        button.setProgress(currentProgress);
+        button.setProgress((float) currentProgress);
         getRunnable(activity).run();
     }
 
-    public void setCurrentProgress(int currentProgress) {
+    public void setCurrentProgress(double currentProgress) {
         this.currentProgress = currentProgress;
     }
 
@@ -101,7 +105,7 @@ public class ProgressHelper {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        button.setProgress(currentProgress);
+                        button.setProgress((float) currentProgress);
                         if(currentProgress >= 100){
                             button.setProgress(0);
                             currentProgress = 0;
@@ -111,4 +115,5 @@ public class ProgressHelper {
 
             }
         }}
+
 }

@@ -17,16 +17,21 @@ import io.realm.RealmResults;
 
 public class DAL {
     private static final String TAG = "DAL";
-    private static final DAL ourInstance = new DAL();
+    private static DAL ourInstance = null;
     private static Realm realm;
     private static Context mContext;
     public static DAL getInstance() {
-        return ourInstance;
+        if(ourInstance == null){
+            return new DAL();
+        }
+        return  new DAL();
+        //return ourInstance;
     }
 
     private DAL() {
         realm = Realm.getDefaultInstance();
     }
+
 
     public static DAL setContext(Context context){
         mContext = context;
@@ -58,6 +63,26 @@ public class DAL {
     public static RealmResults<Surah> getAllSurah(){
         RealmQuery<Surah> query = realm.where(Surah.class);
         return query.findAll();
+    }
+
+    public static void updateProgress(final String id ,final double progress){
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                Surah surah = bgRealm.where(Surah.class).equalTo("key", id).findFirst();
+                surah.setProgress(progress);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess: item Action Set!");
+            }
+        });
+    }
+
+    public static double getProgress(final String id){
+        Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
+        return surah.getProgress();
     }
 
 

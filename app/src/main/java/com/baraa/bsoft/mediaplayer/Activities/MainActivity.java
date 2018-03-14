@@ -1,9 +1,18 @@
 package com.baraa.bsoft.mediaplayer.Activities;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,8 +22,10 @@ import android.widget.ListView;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
+import com.baraa.bsoft.mediaplayer.Services.PlayService;
 import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
 import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
+import com.golshadi.majid.core.DownloadManagerPro;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,12 +35,20 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import mbanje.kurt.fabbutton.FabButton;
 
-public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener {
+
+public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener{
     private static final String TAG = "MainActivity";
     private RealmResults<Surah> surahs;
     private ListView lvClips;
     private MediaPlayer mediaPlayer;
     private FabButton lastPlayButton;
+
+    private Context mContext=MainActivity.this;
+    private static final int REQUEST = 101;
+
+    private int mTaskToken;
+    private DownloadManagerPro mDownloadManagerPro;
+    private SurahAdapter mSurahAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
         Realm.setDefaultConfiguration(config);
-
-
 
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
@@ -52,18 +69,17 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         builSurahList("1");
         surahs = DAL.getInstance().setContext(this).getAllSurah(); //builSurahList("1");
         lvClips = (ListView)findViewById(R.id.lvClips);
-        SurahAdapter surahAdapter = new SurahAdapter(this,R.layout.list_item,surahs);
-        surahAdapter.setmPlayListListener(this);
+        mSurahAdapter = new SurahAdapter(this,R.layout.list_item,surahs);
+        mSurahAdapter.setmPlayListListener(this);
         lvClips.setMinimumHeight(200);
-        lvClips.setAdapter(surahAdapter);
+        lvClips.setAdapter(mSurahAdapter);
 
         mediaPlayer = new MediaPlayer();
         for (Surah item:DAL.getAllSurah()) {
             Log.d(TAG, "onCreate: Data In Realm \n"+item.getUrl());
         }
-
-
     }
+
 
     public ArrayList<Surah> builSurahList(String artistKey){
         ArrayList<Surah> surahs = new ArrayList<>();
@@ -77,15 +93,43 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
             String x = strBuilder.append(b).append(".mp3").toString();
             Surah item = new Surah(surahArry[i],x,i,artistKey);
             surahs.add(item);
+            if(mSurahAdapter != null){
+                mSurahAdapter.notifyDataSetChanged();
+            }
         }
         DAL.getInstance().setContext(this).InsertListToDB(surahs);
         return surahs;
     }
 
     @Override
-    public void onItemListClicked(Surah surah, int index, final View view) {
+    protected void onResume() {
+        super.onResume();
+        registeringReciver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiverIsPlaying);
+    }
+
+    BroadcastReceiver mReceiverIsPlaying = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(PlayService.ACTION_IS_PLAYING)){
+                boolean isPlaying = intent.getExtras().getBoolean(PlayService.DATA_IS_PLAYING);
+            }
+
+        }
+    };
+    private void registeringReciver(){
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiverIsPlaying,new IntentFilter(PlayService.ACTION_IS_PLAYING));
+    }
+
+    @Override
+    public void onItemListClicked(Surah surah, int index, final FabButton view) {
         final int x = index;
-        final ProgressHelper progressHelper = new ProgressHelper((FabButton) view,this);
+        final ProgressHelper progressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
         progressHelper.startIndeterminate();
         final String surahUrl = surahs.get(x).getUrl();
         AsyncTask.execute(new Runnable() {
@@ -131,6 +175,12 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     }
 
     @Override
+    public void onDownloadClicked(Surah surah, int index, FabButton view) {
+        Log.d(TAG, "onDownloadClicked: >> "+surah.getTitle()+":"+surah.getKey());
+
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnPlay:
@@ -142,4 +192,35 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         }
 
     }
+
+
+
+
+    public boolean checkStoragePermissionBeforeAccess(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            if (!hasPermissions(mContext, PERMISSIONS)) {
+                ActivityCompat.requestPermissions((Activity) mContext, PERMISSIONS, REQUEST );
+                return false;
+            } else {
+                //do here
+                return true;
+
+            }
+        } else {
+            //do here
+            return true;
+        }
+    }
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

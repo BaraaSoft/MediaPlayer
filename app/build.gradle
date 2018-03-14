@@ -34,4 +34,5 @@ dependencies {
 
     compile 'mbanje.kurt:fabbutton:1.2.4@aar'
     apply plugin: 'realm-android'
+    //compile project(path: ':mlib')
 }

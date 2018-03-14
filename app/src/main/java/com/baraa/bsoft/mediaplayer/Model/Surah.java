@@ -17,7 +17,9 @@ public class Surah extends RealmObject{
     private String title;
     private String url;
     private int number;
+    private boolean stored;
 
+    private double progress;
     public Surah(){
         super();
     }
@@ -28,6 +30,8 @@ public class Surah extends RealmObject{
         this.url = url;
         this.number = number;
         this.setKey(number+artistKey);
+        this.progress = 0;
+        this.stored = false;
     }
 
     public String getTitle() {
@@ -76,5 +80,20 @@ public class Surah extends RealmObject{
 
     public void setArtistKey(String artistKey) {
         this.artistKey = artistKey;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
+    }
+    public boolean isStored() {
+        return stored;
+    }
+
+    public void setStored(boolean stored) {
+        this.stored = stored;
     }
 }
