@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.baraa.bsoft.mediaplayer.Model.Surah;
@@ -18,9 +19,19 @@ public class DownloadService extends Service implements DownloadManagerListener 
     private int mTaskToken;
 
     public static final String ACTION_START_DOWNLOAD = "action.startDownload";
+    public static final String ACTION_PROGRESS = "action.progress";
+    public static final String ACTION_FINISHED = "action.finished";
     public static final String DATA_SURAH = "surah";
+    public static final String TOKEN_DOWNLOAD = "token.download";
     private  DownloadManagerPro mDownloadManagerPro;
     public DownloadService() {
+    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mDownloadManagerPro = new DownloadManagerPro(this);
     }
 
     @Override
@@ -48,11 +59,13 @@ public class DownloadService extends Service implements DownloadManagerListener 
     }
 
     private void downloadInit(Surah surah){
-        mDownloadManagerPro = new DownloadManagerPro(this);
         mDownloadManagerPro.init(getPublicAlbumStorageDir("Quran").getAbsolutePath(),12,this);
-        mTaskToken = mDownloadManagerPro
-                .addTask(surah.getKey(),surah.getUrl(),12,getPublicAlbumStorageDir("Quran").getAbsolutePath(),true,false);
-
+        this.mTaskToken = mDownloadManagerPro
+                .addTask(surah.getKey(),surah.getUrl(),12,getPublicAlbumStorageDir("Quran")
+                        .getAbsolutePath(),true,false);
+        Intent intent = new Intent(TOKEN_DOWNLOAD);
+        intent.putExtra(TOKEN_DOWNLOAD,mTaskToken);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private File getPublicAlbumStorageDir(String albumName) {
@@ -77,11 +90,18 @@ public class DownloadService extends Service implements DownloadManagerListener 
 
     @Override
     public void onDownloadProcess(long taskId, double percent, long downloadedLength) {
+        Intent intent = new Intent(ACTION_PROGRESS);
+        intent.putExtra(ACTION_PROGRESS,percent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
     }
 
     @Override
     public void OnDownloadFinished(long taskId) {
+        Intent intent = new Intent(ACTION_FINISHED);
+        intent.putExtra(TOKEN_DOWNLOAD,taskId);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        stopSelf();
 
     }
 

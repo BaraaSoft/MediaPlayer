@@ -25,7 +25,7 @@ import mbanje.kurt.fabbutton.FabButton;
  * Created by baraa on 01/01/2018.
  */
 
-public class SurahAdapter extends ArrayAdapter implements ItemDownloadListener.KeepUiInSyncListener {
+public class SurahAdapter extends ArrayAdapter {
     private static final String TAG = "SurahAdapter";
     private RealmResults<Surah> surahslst;
     private Context context;
@@ -38,10 +38,6 @@ public class SurahAdapter extends ArrayAdapter implements ItemDownloadListener.K
     private ProgressHelper mProgressHelper;
     private ArrayList<String> mKeys;
 
-    @Override
-    public void onDownloadStarted(String key) {
-        mKeys.add(key);
-    }
 
     public interface PlayListListener{
         void onItemListClicked(Surah surah,int index,FabButton view);
@@ -84,7 +80,7 @@ public class SurahAdapter extends ArrayAdapter implements ItemDownloadListener.K
                 mPlayListListener.onItemListClicked(surah,position,(FabButton)viewHolder.getBtnPlay());
             }
         });
-        viewHolder.getBtnDownload().setOnClickListener(new ItemDownloadListener(viewHolder.getBtnDownload(),context,surahslst.get(position),this,this));
+        viewHolder.getBtnDownload().setOnClickListener(new ItemDownloadListener(viewHolder.getBtnDownload(),context,surahslst.get(position)));
         return convertView;
     }
 
