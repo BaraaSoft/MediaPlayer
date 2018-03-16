@@ -1,5 +1,7 @@
 package com.baraa.bsoft.mediaplayer.Model;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -7,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by baraa on 01/01/2018.
  */
 
-public class Surah extends RealmObject{
+public class Surah extends RealmObject implements Serializable{
 
     @PrimaryKey
     private String key;

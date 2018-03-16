@@ -2,15 +2,18 @@ package com.baraa.bsoft.mediaplayer.Activities;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +28,6 @@ import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.PlayService;
 import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
 import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
-import com.golshadi.majid.core.DownloadManagerPro;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +36,14 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import mbanje.kurt.fabbutton.FabButton;
+
+
+/*
+* unregister the LocalBroadcast dynamically:
+* MyApplication.getInstance().getApplicationContext().registerReceiver(sentReceiver, new IntentFilter(SENT));
+* MyApplication.getInstance().getApplicationContext().unregisterReceiver(this);
+*
+**/
 
 
 public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener{
@@ -45,10 +55,24 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
     private Context mContext=MainActivity.this;
     private static final int REQUEST = 101;
-
-    private int mTaskToken;
-    private DownloadManagerPro mDownloadManagerPro;
     private SurahAdapter mSurahAdapter;
+
+    private PlayService mBoundService;
+    private boolean isServiceBound;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            PlayService.PlayerBinder playerBinder = (PlayService.PlayerBinder) iBinder;
+            mBoundService = playerBinder.getService();
+            isServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isServiceBound = false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     @Override
     protected void onResume() {
         super.onResume();
-        registeringReciver();
+        registeringReceiver();
     }
+
+
 
     @Override
     protected void onPause() {
@@ -122,8 +148,26 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
         }
     };
-    private void registeringReciver(){
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiverIsPlaying,new IntentFilter(PlayService.ACTION_IS_PLAYING));
+    private void registeringReceiver(){
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mReceiverIsPlaying,new IntentFilter(PlayService.ACTION_IS_PLAYING));
+    }
+
+
+    private void startMediaPlayerService(String url){
+        Intent intent = new Intent(this,PlayService.class);
+        intent.putExtra(PlayService.DATA_URL,url);
+        intent.setAction(PlayService.ACTION_PLAY);
+        bindService(intent,mServiceConnection,Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(isServiceBound){
+            unbindService(mServiceConnection);
+            isServiceBound = false;
+        }
     }
 
     @Override

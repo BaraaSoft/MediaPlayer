@@ -3,6 +3,7 @@ package com.baraa.bsoft.mediaplayer.Services;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -14,19 +15,26 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     public static final String ACTION_PLAY  = "action.play";
     public static final String DATA_URL = "url";
     private MediaPlayer mMediaPlayer;
+
+
+    private final IBinder mBinder = new PlayerBinder();
+
+    public class PlayerBinder extends Binder {
+        public PlayService getService(){
+            return PlayService.this;
+        }
+    }
+
+
     public PlayService() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         if (intent.getAction().equals(ACTION_PLAY)) {
             String url = intent.getExtras().getString(DATA_URL);
             playStream(url);
         }
-
-
-
         return START_NOT_STICKY;
     }
 
@@ -35,7 +43,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         // TODO: Return the communication channel to the service.
         //throw new UnsupportedOperationException("Not yet implemented");
 
-        return null;
+        return mBinder;
     }
 
     private void toggleUiPlayPauseIcon(boolean isPlaying){

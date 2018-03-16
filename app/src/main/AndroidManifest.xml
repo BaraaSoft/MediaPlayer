@@ -23,6 +23,10 @@
         <service
             android:name=".Services.PlayService"
             android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.DownloadService"
+            android:enabled="true"
             android:exported="true"></service>
     </application>
 
