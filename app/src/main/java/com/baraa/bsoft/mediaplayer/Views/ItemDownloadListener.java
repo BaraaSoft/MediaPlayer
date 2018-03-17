@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
@@ -27,7 +26,7 @@ public class ItemDownloadListener implements View.OnClickListener {
     private Surah mSurah;
 
     private static final int REQUEST = 101;
-    private Integer mTaskToken = null;
+    private long mTaskToken = 0;
     private Double mProgress = null;
     private ProgressHelper mProgressHelper;
 
@@ -35,9 +34,13 @@ public class ItemDownloadListener implements View.OnClickListener {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+
+            if(intent == null){
+                return;
+            }
             long tk = intent.getLongExtra(DownloadService.TOKEN_DOWNLOAD,0);
             if(intent.getAction().equals(DownloadService.TOKEN_DOWNLOAD)){
-                mTaskToken =  intent.getIntExtra(DownloadService.TOKEN_DOWNLOAD,0);
+                mTaskToken =  intent.getLongExtra(DownloadService.TOKEN_DOWNLOAD,0);
             }
             if(intent.getAction().equals(DownloadService.ACTION_PROGRESS)){
                 if(tk == mTaskToken){
@@ -84,9 +87,7 @@ public class ItemDownloadListener implements View.OnClickListener {
         if (!((MainActivity)mContext).checkStoragePermissionBeforeAccess()) return;
         Intent intent = new Intent(mContext, DownloadService.class);
         intent.setAction(DownloadService.ACTION_START_DOWNLOAD);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(DownloadService.DATA_SURAH,surah);
-        intent.putExtras(bundle);
+        intent.putExtra(DownloadService.DATA_SURAH, Integer.valueOf(surah.getKey()));
         mContext.startService(intent);
     }
 

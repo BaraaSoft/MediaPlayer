@@ -22,10 +22,10 @@ public class DAL {
     private static Context mContext;
     public static DAL getInstance() {
         if(ourInstance == null){
-            return new DAL();
+            ourInstance = new DAL();
+            return ourInstance;
         }
-        return  new DAL();
-        //return ourInstance;
+        return  ourInstance;
     }
 
     private DAL() {
@@ -83,6 +83,10 @@ public class DAL {
     public static double getProgress(final String id){
         Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
         return surah.getProgress();
+    }
+    public Surah getSurah(final String id){
+        Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
+        return surah;
     }
 
 

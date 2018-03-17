@@ -7,11 +7,13 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.golshadi.majid.core.DownloadManagerPro;
 import com.golshadi.majid.report.listener.DownloadManagerListener;
 
 import java.io.File;
+import java.io.IOException;
 
 public class DownloadService extends Service implements DownloadManagerListener {
     private static final String TAG = "DownloadService";
@@ -37,10 +39,11 @@ public class DownloadService extends Service implements DownloadManagerListener 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent.getAction().equals(ACTION_START_DOWNLOAD)){
-            Surah surah = (Surah) intent.getExtras().getSerializable(DATA_SURAH);
+            int key = intent.getIntExtra(DATA_SURAH,0);
+            Surah surah = DAL.getInstance().setContext(this).getSurah(key+"");
             downloadInit(surah);
         }
-        return START_NOT_STICKY;
+        return START_STICKY; //START_NOT_STICKY;
     }
 
     @Override
@@ -53,8 +56,8 @@ public class DownloadService extends Service implements DownloadManagerListener 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mDownloadManagerPro.dispose();
-        mDownloadManagerPro = null;
+        //mDownloadManagerPro.dispose();
+        //mDownloadManagerPro = null;
 
     }
 
@@ -64,17 +67,30 @@ public class DownloadService extends Service implements DownloadManagerListener 
                 .addTask(surah.getKey(),surah.getUrl(),12,getPublicAlbumStorageDir("Quran")
                         .getAbsolutePath(),true,false);
         Intent intent = new Intent(TOKEN_DOWNLOAD);
-        intent.putExtra(TOKEN_DOWNLOAD,mTaskToken);
+        intent.putExtra(TOKEN_DOWNLOAD,new Long(mTaskToken));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        try {
+            mDownloadManagerPro.startDownload(this.mTaskToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private File getPublicAlbumStorageDir(String albumName) {
         // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), albumName);
-        if (!file.mkdirs()) {
-            Log.e(TAG, "Directory not created");
+        File file = null;
+        try {
+            file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), albumName);
+            if (!file.mkdirs()) {
+                Log.e(TAG, "Directory not created");
+            }
+        }catch (Exception e){
+            Log.e(TAG, "getPublicAlbumStorageDir: ",e );
         }
+
+
         return file;
     }
 
@@ -90,7 +106,9 @@ public class DownloadService extends Service implements DownloadManagerListener 
 
     @Override
     public void onDownloadProcess(long taskId, double percent, long downloadedLength) {
+        Log.d(TAG, "onDownloadProcess: "+percent+"%");
         Intent intent = new Intent(ACTION_PROGRESS);
+        intent.putExtra(TOKEN_DOWNLOAD,taskId);
         intent.putExtra(ACTION_PROGRESS,percent);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
@@ -102,7 +120,6 @@ public class DownloadService extends Service implements DownloadManagerListener 
         intent.putExtra(TOKEN_DOWNLOAD,taskId);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         stopSelf();
-
     }
 
     @Override
