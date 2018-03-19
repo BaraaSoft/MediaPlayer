@@ -111,6 +111,7 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
 
             }
         });
+        mDownloadManagerPro.downloadTasksInSameState(4);
         return convertView;
     }
 
@@ -139,7 +140,7 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
                 fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
                 break;
             case 1:
-                fabButton.setIcon(R.drawable.download_botton_complete_arrow,R.drawable.download_botton_complete_arrow);
+                fabButton.setIcon(R.drawable.download_button_arrow,R.drawable.download_button_arrow);
                 fabButton.setEnabled(false);
                 break;
             case 2:
@@ -178,9 +179,9 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
         if(!((MainActivity)getContext()).checkStoragePermissionBeforeAccess()){
             Toast.makeText(context,"Enable permission to download! ",Toast.LENGTH_LONG);
         }
-        mDownloadManagerPro.init(getPublicAlbumStorageDir("Quran").getAbsolutePath(),12,this);
+        mDownloadManagerPro.init(getPublicAlbumStorageDir("Quran").getAbsolutePath(),6,this);
         long taskToken = mDownloadManagerPro
-                .addTask(surah.getKey(),surah.getUrl(),12,getPublicAlbumStorageDir("Quran")
+                .addTask(surah.getKey(),surah.getUrl(),6,getPublicAlbumStorageDir("Quran")
                         .getAbsolutePath(),true,false);
         try {
             mDownloadManagerPro.startDownload((int)taskToken);
@@ -224,8 +225,16 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
     }
 
     @Override
-    public void OnDownloadPaused(long taskId) {
-        Log.d(TAG, "connectionLost: >>>>>>>"+" Download Paused! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
+    public void OnDownloadPaused(final long taskId) {
+        ((MainActivity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "connectionLost: >>>>>>>"+" Download Paused! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
+
+            }
+        });
+
+
 
     }
 
@@ -268,8 +277,14 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
     }
 
     @Override
-    public void connectionLost(long taskId) {
-        Log.d(TAG, "connectionLost: >>>>>>>"+" Connection Lost! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
+    public void connectionLost(final long taskId) {
+        ((MainActivity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "connectionLost: >>>>>>>"+" Connection Lost! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
+
+            }
+        });
 
     }
 
