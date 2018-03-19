@@ -1,7 +1,10 @@
 package com.baraa.bsoft.mediaplayer.Services;
 
+import android.app.DownloadManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -41,6 +44,7 @@ public class DownloadService extends Service implements DownloadManagerListener 
         if(intent.getAction().equals(ACTION_START_DOWNLOAD)){
             int key = intent.getIntExtra(DATA_SURAH,0);
             Surah surah = DAL.getInstance().setContext(this).getSurah(key+"");
+            //downloadDataViaDownloadManager(surah);
             downloadInit(surah);
         }
         return START_STICKY; //START_NOT_STICKY;
@@ -140,6 +144,39 @@ public class DownloadService extends Service implements DownloadManagerListener 
     @Override
     public void connectionLost(long taskId) {
 
+    }
+
+
+    private long downloadDataViaDownloadManager (Surah surah) {
+
+        long downloadReference;
+
+        // Create request for android download manager
+        DownloadManager downloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(surah.getUrl()));
+
+        request.setTitle(surah.getTitle());
+        request.addRequestHeader(surah.getTitle(),surah.getTitle());
+        request.setDescription("Downloading "+surah.getTitle()+" please wait...");
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+
+        //request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        request.setVisibleInDownloadsUi(true);
+
+        //request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+
+
+        //Set the local destination for the downloaded file to a path
+        //within the application's external files directory
+        // request.setDestinationInExternalFilesDir(context,Environment.DIRECTORY_DOWNLOADS,"AndroidTutorialPoint.mp3");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,surah.getKey().toString());
+        downloadReference = downloadManager.enqueue(request);
+        Log.d(TAG, "downloadData: >>>"+downloadReference);
+        Log.d(TAG, "downloadData: >>>"+surah.getUrl());
+
+        return downloadReference;
     }
 
 

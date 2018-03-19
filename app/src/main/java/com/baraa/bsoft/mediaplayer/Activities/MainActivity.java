@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         builSurahList("1");
         surahs = DAL.getInstance().setContext(this).getAllSurah(); //builSurahList("1");
         lvClips = (ListView)findViewById(R.id.lvClips);
-        mSurahAdapter = new SurahAdapter(this,R.layout.list_item,surahs);
+        mSurahAdapter = new SurahAdapter(this,R.layout.list_item,surahs,lvClips);
         mSurahAdapter.setmPlayListListener(this);
         lvClips.setMinimumHeight(200);
         lvClips.setAdapter(mSurahAdapter);

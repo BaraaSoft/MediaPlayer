@@ -65,7 +65,7 @@ public class DAL {
         return query.findAll();
     }
 
-    public static void updateProgress(final String id ,final double progress){
+    public static void updateProgress(final String id ,final int progress){
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {

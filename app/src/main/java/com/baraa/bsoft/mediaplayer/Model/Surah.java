@@ -21,7 +21,7 @@ public class Surah extends RealmObject implements Serializable{
     private int number;
     private boolean stored;
 
-    private double progress;
+    private int progress;
     public Surah(){
         super();
     }
@@ -84,11 +84,11 @@ public class Surah extends RealmObject implements Serializable{
         this.artistKey = artistKey;
     }
 
-    public double getProgress() {
+    public int getProgress() {
         return progress;
     }
 
-    public void setProgress(double progress) {
+    public void setProgress(int progress) {
         this.progress = progress;
     }
     public boolean isStored() {
