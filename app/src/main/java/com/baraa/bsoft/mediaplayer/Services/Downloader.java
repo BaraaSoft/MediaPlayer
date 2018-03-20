@@ -25,6 +25,7 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     private PowerManager.WakeLock mWakeLock;
     private DownloadProgressListener mProgressListener;
     private String mToken;
+    private int progress = 0;
 
     public interface DownloadProgressListener{
         void onDownloadFinnished(String tokenId);
@@ -119,7 +120,14 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         if(values == null){
             return;
         }
-        mProgressListener.onDownloadProgress(mToken,values[0]);
+        //Log.d(TAG, "onProgressUpdate: >>> "+values[0]);
+
+        if(values[0]%5 == 0 && values[0] != progress){
+            mProgressListener.onDownloadProgress(mToken,values[0]);
+        }
+
+        progress = values[0];
+
     }
 
     @Override

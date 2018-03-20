@@ -96,7 +96,6 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 viewHolder.getBtnDownload().showShadow(false);
                 viewHolder.getBtnDownload().showProgress(true);
                 downloadInit(surah);
-                viewHolder.getBtnDownload().setTag(viewHolder.getBtnDownload());
                 mMapViewDownload.put(surah.getKey(),position);
 
             }
@@ -109,17 +108,17 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
      *    (( disable view recycling!! )
      *
      ****/
-//    @Override
-//    public int getViewTypeCount() {
-//
-//        return surahslst.size();
-//    }
-//
-//    @Override
-//    public int getItemViewType(int position) {
-//
-//        return position;
-//    }
+    @Override
+    public int getViewTypeCount() {
+
+        return surahslst.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
+    }
     /*************************************/
 
 
@@ -139,11 +138,14 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                     fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
         }
     }
-
     private void updateViewDownloadProgress(final int pos,final double progress){
-        //Log.d(TAG, "updateViewDownloadProgress: "+progress+"%");
-        FabButton fabButton = (FabButton) getViewByPosition(pos,mListView).findViewById(R.id.btnDownloadLst);
-        fabButton.setProgress((float) progress);
+       // Log.d(TAG, "updateViewDownloadProgress: "+progress+"%");
+        View view = getViewByPosition(pos,mListView);
+        if (view == null) return;
+        //Log.d(TAG, "run: >>"+progress);
+        ((FabButton)view.findViewById(R.id.btnDownloadLst)).setProgress((float) progress);
+
+
     }
     public View getViewByPosition(int pos, ListView listView) {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
@@ -172,7 +174,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
             @Override
             public void run() {
                 Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
-                DAL.getInstance().setContext(context).updateProgress(surah.getKey(),1);
+                DAL.getInstance().setContext(context).updateProgress(surah.getKey(),2);
                 FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(tokenId),mListView).findViewById(R.id.btnDownloadLst);
                 setDownloadIcon(fabButton,2);
             }
