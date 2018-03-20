@@ -1,12 +1,10 @@
 package com.baraa.bsoft.mediaplayer.Views;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +19,7 @@ import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.Downloader;
 import com.golshadi.majid.core.DownloadManagerPro;
-import com.golshadi.majid.report.listener.DownloadManagerListener;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +31,7 @@ import mbanje.kurt.fabbutton.FabButton;
  * Created by baraa on 01/01/2018.
  */
 
-public class SurahAdapter extends ArrayAdapter implements DownloadManagerListener, Downloader.DownloadProgressListener {
+public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadProgressListener {
     private static final String TAG = "SurahAdapter";
     private RealmResults<Surah> surahslst;
     private Context context;
@@ -48,7 +43,7 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
 
     private ProgressHelper mProgressHelper;
     private  DownloadManagerPro mDownloadManagerPro;
-    private Map<Long,Integer> mMapViewDownload;
+    private Map<String,Integer> mMapViewDownload;
     private ListView mListView;
 
 
@@ -65,7 +60,6 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
         this.context = context;
         this.resource = resource;
         this.layoutInflater = LayoutInflater.from(context);
-        mDownloadManagerPro = new DownloadManagerPro(getContext());
         mMapViewDownload = new HashMap<>();
         mListView = listView;
     }
@@ -79,13 +73,13 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder viewHolder;
-       // if(convertView == null) {
+        if(convertView == null) {
             convertView = layoutInflater.inflate(resource,parent,false);
             viewHolder = new ViewHolder(convertView);
-//            convertView.setTag(viewHolder);
-//        }else{
-//            viewHolder = (ViewHolder) convertView.getTag();
-//        }
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
         final Surah surah = surahslst.get(position);
         viewHolder.getTvTitle().setText(surah.getTitle());
         viewHolder.getBtnPlay().setOnClickListener(new View.OnClickListener() {
@@ -101,13 +95,12 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
                 viewHolder.getBtnDownload().resetIcon();
                 viewHolder.getBtnDownload().showShadow(false);
                 viewHolder.getBtnDownload().showProgress(true);
-                long tk = downloadInit(surah);
+                downloadInit(surah);
                 viewHolder.getBtnDownload().setTag(viewHolder.getBtnDownload());
-                mMapViewDownload.put(tk,position);
+                mMapViewDownload.put(surah.getKey(),position);
 
             }
         });
-        mDownloadManagerPro.downloadTasksInSameState(4);
         return convertView;
     }
 
@@ -116,17 +109,17 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
      *    (( disable view recycling!! )
      *
      ****/
-    @Override
-    public int getViewTypeCount() {
-
-        return surahslst.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-
-        return position;
-    }
+//    @Override
+//    public int getViewTypeCount() {
+//
+//        return surahslst.size();
+//    }
+//
+//    @Override
+//    public int getItemViewType(int position) {
+//
+//        return position;
+//    }
     /*************************************/
 
 
@@ -144,19 +137,13 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
                 break;
                 default:
                     fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
-
         }
     }
 
     private void updateViewDownloadProgress(final int pos,final double progress){
         //Log.d(TAG, "updateViewDownloadProgress: "+progress+"%");
-        ((MainActivity)context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                FabButton fabButton = (FabButton) getViewByPosition(pos,mListView).findViewById(R.id.btnDownloadLst);
-                fabButton.setProgress((float) progress);
-            }
-        });
+        FabButton fabButton = (FabButton) getViewByPosition(pos,mListView).findViewById(R.id.btnDownloadLst);
+        fabButton.setProgress((float) progress);
     }
     public View getViewByPosition(int pos, ListView listView) {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
@@ -170,135 +157,48 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
         }
     }
 
-    private long downloadInit(Surah surah){
-
+    private void downloadInit(Surah surah){
         if(!((MainActivity)getContext()).checkStoragePermissionBeforeAccess()){
             Toast.makeText(context,"Enable permission to download! ",Toast.LENGTH_LONG);
         }
-        mDownloadManagerPro.init(getPublicAlbumStorageDir("Quran").getAbsolutePath(),6,this);
-        long taskToken = mDownloadManagerPro
-                .addTask(surah.getKey(),surah.getUrl(),6,getPublicAlbumStorageDir("Quran")
-                        .getAbsolutePath(),true,false);
-        try {
-            mDownloadManagerPro.startDownload((int)taskToken);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return taskToken;
+        Downloader downloader = new Downloader(context,this,surah.getKey());
+        downloader.execute(surah.getUrl());
     }
-
-    private File getPublicAlbumStorageDir(String albumName) {
-        // Get the directory for the user's public pictures directory.
-        File file = null;
-        try {
-            file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS), albumName);
-            if (!file.mkdirs()) {
-                Log.e(TAG, "Directory not created");
-            }
-        }catch (Exception e){
-            Log.e(TAG, "getPublicAlbumStorageDir: ",e );
-        }
-
-        return file;
-    }
-
 
 
     @Override
-    public void OnDownloadStarted(final long taskId) {
-
+    public void onDownloadFinnished(final String tokenId) {
         ((MainActivity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Surah surah = surahslst.get(mMapViewDownload.get(taskId));
+                Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
                 DAL.getInstance().setContext(context).updateProgress(surah.getKey(),1);
-                FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(taskId),mListView).findViewById(R.id.btnDownloadLst);
+                FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(tokenId),mListView).findViewById(R.id.btnDownloadLst);
+                setDownloadIcon(fabButton,2);
+            }
+        });
+    }
+
+    @Override
+    public void onDownloadProgress(String tokenId, int progress) {
+        if(progress == 0){
+            return;
+        }
+        updateViewDownloadProgress(mMapViewDownload.get(tokenId),(progress));
+    }
+
+    @Override
+    public void onDownloadStarted(final String tokenId) {
+        ((MainActivity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
+                DAL.getInstance().setContext(context).updateProgress(surah.getKey(),1);
+                FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(tokenId),mListView).findViewById(R.id.btnDownloadLst);
                 setDownloadIcon(fabButton,1);
             }
         });
 
-    }
-
-    @Override
-    public void OnDownloadPaused(final long taskId) {
-        ((MainActivity)context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "connectionLost: >>>>>>>"+" Download Paused! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
-
-            }
-        });
-
-    }
-
-    @Override
-    public void onDownloadProcess(final long taskId, final double percent, long downloadedLength) {
-
-        //Log.d(TAG, "onDownloadProcess: >> "+surahslst.get(mMapViewDownload.get(taskId)).getProgress());
-        updateViewDownloadProgress(mMapViewDownload.get(taskId),percent);
-
-    }
-
-    @Override
-    public void OnDownloadFinished(final long taskId) {
-
-        ((MainActivity)context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Surah surah = surahslst.get(mMapViewDownload.get(taskId));
-                DAL.getInstance().setContext(context).updateProgress(surah.getKey(),1);
-                FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(taskId),mListView).findViewById(R.id.btnDownloadLst);
-                setDownloadIcon(fabButton,2);
-            }
-        });
-
-    }
-
-    @Override
-    public void OnDownloadRebuildStart(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadRebuildFinished(long taskId) {
-
-    }
-
-    @Override
-    public void OnDownloadCompleted(long taskId) {
-
-    }
-
-    @Override
-    public void connectionLost(final long taskId) {
-        ((MainActivity)context).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "connectionLost: >>>>>>>"+" Connection Lost! "+surahslst.get(mMapViewDownload.get(taskId)).getTitle()+"<<<<<<<<");
-
-            }
-        });
-
-    }
-
-
-
-
-
-
-    @Override
-    public void onDownloadFinnished(int tokenId) {
-
-    }
-
-    @Override
-    public void onDownloadProgress(int tokenId, int progress) {
-
-    }
-
-    @Override
-    public void onDownloadStarted(int tokenId) {
 
     }
 

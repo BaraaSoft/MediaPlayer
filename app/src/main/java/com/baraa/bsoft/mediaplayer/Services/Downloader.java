@@ -24,12 +24,12 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     private Context mContext;
     private PowerManager.WakeLock mWakeLock;
     private DownloadProgressListener mProgressListener;
-    private int mToken;
+    private String mToken;
 
     public interface DownloadProgressListener{
-        void onDownloadFinnished(int tokenId);
-        void onDownloadProgress(int tokenId,int progress);
-        void onDownloadStarted(int tokenId);
+        void onDownloadFinnished(String tokenId);
+        void onDownloadProgress(String tokenId,int progress);
+        void onDownloadStarted(String tokenId);
     }
 
 
@@ -37,9 +37,10 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         mProgressListener = progressListener;
     }
 
-    public Downloader(Context context,DownloadProgressListener downloadProgressListener,int token) {
+    public Downloader(Context context,DownloadProgressListener downloadProgressListener,String token) {
         this.mContext = context;
         this.mToken = token;
+        this.mProgressListener = downloadProgressListener;
     }
 
     @Override
@@ -49,6 +50,7 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
         mWakeLock.acquire();
+
     }
 
     @Override
@@ -114,6 +116,9 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
+        if(values == null){
+            return;
+        }
         mProgressListener.onDownloadProgress(mToken,values[0]);
     }
 
@@ -121,8 +126,10 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         mWakeLock.release();
-        if (result != null)
+        if (result != null){
             Toast.makeText(mContext,"Download error: "+result, Toast.LENGTH_LONG).show();
+            Log.e(TAG, "onPostExecute: >>>"+result);
+        }
         else{
             mProgressListener.onDownloadFinnished(mToken);
         }
