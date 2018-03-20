@@ -19,6 +19,7 @@ import com.baraa.bsoft.mediaplayer.Activities.MainActivity;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
+import com.baraa.bsoft.mediaplayer.Services.Downloader;
 import com.golshadi.majid.core.DownloadManagerPro;
 import com.golshadi.majid.report.listener.DownloadManagerListener;
 
@@ -35,7 +36,7 @@ import mbanje.kurt.fabbutton.FabButton;
  * Created by baraa on 01/01/2018.
  */
 
-public class SurahAdapter extends ArrayAdapter implements DownloadManagerListener {
+public class SurahAdapter extends ArrayAdapter implements DownloadManagerListener, Downloader.DownloadProgressListener {
     private static final String TAG = "SurahAdapter";
     private RealmResults<Surah> surahslst;
     private Context context;
@@ -49,11 +50,6 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
     private  DownloadManagerPro mDownloadManagerPro;
     private Map<Long,Integer> mMapViewDownload;
     private ListView mListView;
-
-
-    enum Status{None,Started,Finnished}
-
-
 
 
     public interface PlayListListener{
@@ -234,8 +230,6 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
             }
         });
 
-
-
     }
 
     @Override
@@ -285,6 +279,26 @@ public class SurahAdapter extends ArrayAdapter implements DownloadManagerListene
 
             }
         });
+
+    }
+
+
+
+
+
+
+    @Override
+    public void onDownloadFinnished(int tokenId) {
+
+    }
+
+    @Override
+    public void onDownloadProgress(int tokenId, int progress) {
+
+    }
+
+    @Override
+    public void onDownloadStarted(int tokenId) {
 
     }
 
