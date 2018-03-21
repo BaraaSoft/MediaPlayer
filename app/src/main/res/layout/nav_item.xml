@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppThemeNoActionNavItem"
+    android:paddingLeft="16dp"
+    android:layout_marginTop="16dp"
+    android:paddingRight="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgShk"
+            android:layout_width="@dimen/nav_img_width"
+            android:layout_height="@dimen/nav_img_height"
+            android:src="@drawable/shk_muhammad_abdulkareem_bezzy"/>
+        <TextView
+            android:id="@+id/tvShk"
+            android:layout_marginTop="@dimen/nav_margin_top_item_title"
+            android:layout_marginLeft="@dimen/nav_margin_left_item_title"
+            android:text="@string/shk_muhammad_abdulkareem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

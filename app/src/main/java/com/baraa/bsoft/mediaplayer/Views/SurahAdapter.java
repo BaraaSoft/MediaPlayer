@@ -167,7 +167,6 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         downloader.execute(surah.getUrl());
     }
 
-
     @Override
     public void onDownloadFinnished(final String tokenId) {
         ((MainActivity)context).runOnUiThread(new Runnable() {
@@ -200,13 +199,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 setDownloadIcon(fabButton,1);
             }
         });
-
-
     }
-
-
-
-
 
     public class ViewHolder{
         public TextView tvTitle;
