@@ -18,14 +18,11 @@ import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.Downloader;
-import com.golshadi.majid.core.DownloadManagerPro;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.realm.RealmResults;
 import mbanje.kurt.fabbutton.FabButton;
 
 /**
@@ -34,16 +31,11 @@ import mbanje.kurt.fabbutton.FabButton;
 
 public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadProgressListener {
     private static final String TAG = "SurahAdapter";
-    private RealmResults<Surah> surahslst;
+    private ArrayList<Surah> surahslst;
     private Context context;
-    private Surah surah;
     private int resource;
     private LayoutInflater layoutInflater;
     private PlayListListener mPlayListListener;
-    private WeakReference<MainActivity> mainActivityWeakReference;
-
-    private ProgressHelper mProgressHelper;
-    private  DownloadManagerPro mDownloadManagerPro;
     private Map<String,Integer> mMapViewDownload;
     private ListView mListView;
 
@@ -55,7 +47,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
     public void setmPlayListListener(PlayListListener playListListener){
         mPlayListListener = playListListener;
     }
-    public SurahAdapter(@NonNull Context context, @LayoutRes int resource, RealmResults<Surah> mlist,ListView listView) {
+    public SurahAdapter(@NonNull Context context, @LayoutRes int resource, ArrayList<Surah> mlist,ListView listView) {
         super(context, resource);
         surahslst = mlist;
         this.context = context;
@@ -123,7 +115,9 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
     /*************************************/
 
     public void updateData(ArrayList<Surah> lst){
-
+        surahslst.clear();
+        surahslst = lst;
+        notifyDataSetChanged();
     }
 
 

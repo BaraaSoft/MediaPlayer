@@ -55,7 +55,7 @@ public class MainActivityDisplay extends AppCompatActivity
         DataBuilder dataBuilder = new DataBuilder(this);
         mArtists = dataBuilder.getAllArtists();
         ListView lvNav = (ListView) findViewById(R.id.lvNav);
-        NavAdapter adapter = new NavAdapter(this,R.layout.nav_item,mArtists);
+        NavAdapter adapter = new NavAdapter(this,R.layout.nav_item,mArtists,this);
         lvNav.setAdapter(adapter);
 
     }

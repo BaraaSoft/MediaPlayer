@@ -22,10 +22,20 @@ import java.util.ArrayList;
 public class NavAdapter extends ArrayAdapter {
     private Context mContext;
     private ArrayList<Artist> mArtists;
-    public NavAdapter(@NonNull Context context, int resource,ArrayList<Artist> lstArtists) {
+    private NavListener mNavListener;
+
+    public interface NavListener{
+        void onNavClicked(Artist artist);
+    }
+    public NavAdapter(@NonNull Context context, int resource,ArrayList<Artist> lstArtists,NavListener navListener) {
         super(context, resource);
         this.mContext = context;
         this.mArtists = lstArtists;
+        if(mNavListener instanceof NavListener){
+            this.mNavListener = navListener;
+        }else {
+            throw new ClassCastException("must implement NavListener!");
+        }
     }
 
     @NonNull
@@ -42,7 +52,12 @@ public class NavAdapter extends ArrayAdapter {
         final Artist artist = mArtists.get(position);
         viewHolder.getTvShk().setText(artist.getName());
         viewHolder.getImgShk().setImageDrawable(mContext.getDrawable(artist.getImageResourceId()));
-
+        viewHolder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mNavListener.onNavClicked(artist);
+            }
+        });
         return convertView;
     }
 
@@ -69,6 +84,10 @@ public class NavAdapter extends ArrayAdapter {
 
         public TextView getTvShk() {
             return tvShk;
+        }
+
+        public View getView() {
+            return view;
         }
     }
 }

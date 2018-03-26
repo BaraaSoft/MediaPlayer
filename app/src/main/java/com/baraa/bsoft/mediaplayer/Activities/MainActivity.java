@@ -31,10 +31,10 @@ import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 import mbanje.kurt.fabbutton.FabButton;
 
 
@@ -48,7 +48,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener{
     private static final String TAG = "MainActivity";
-    private RealmResults<Surah> surahs;
+    private ArrayList<Surah> mSurahs;
     private ListView lvClips;
     private MediaPlayer mediaPlayer;
     private FabButton lastPlayButton;
@@ -81,6 +81,14 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
         Realm.setDefaultConfiguration(config);
 
+
+
+
+
+
+
+
+        //
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         ImageButton btnPlay = findViewById(R.id.btnPlay);
@@ -91,9 +99,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         btnbackward.setOnClickListener(this);
 
         builSurahList("1");
-        surahs = DAL.getInstance().setContext(this).getAllSurah(); //builSurahList("1");
+        Surah[] arry = (Surah[]) DAL.getInstance().setContext(this).getAllSurah().toArray();
+        mSurahs = (ArrayList<Surah>) Arrays.asList(arry); //builSurahList("1");
         lvClips = (ListView)findViewById(R.id.lvClips);
-        mSurahAdapter = new SurahAdapter(this,R.layout.list_item,surahs,lvClips);
+        mSurahAdapter = new SurahAdapter(this,R.layout.list_item, mSurahs,lvClips);
         mSurahAdapter.setmPlayListListener(this);
         lvClips.setMinimumHeight(200);
         lvClips.setAdapter(mSurahAdapter);
@@ -175,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         final int x = index;
         final ProgressHelper progressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
         progressHelper.startIndeterminate();
-        final String surahUrl = surahs.get(x).getUrl();
+        final String surahUrl = mSurahs.get(x).getUrl();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -190,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
                         });
                     }
                 }
-                //Log.d(TAG, "onItemListClicked: "+surahs.get(x).getUrl());
+                //Log.d(TAG, "onItemListClicked: "+mSurahs.get(x).getUrl());
                 try {
                     mediaPlayer = new MediaPlayer();
                     runOnUiThread(new Runnable() {
