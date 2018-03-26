@@ -11,4 +11,5 @@
     <color name="colorDarkSilent">#211c2b</color>
     <color name="colorDarkSilentLight">#373240</color>
     <color name="colorDarkVeryLight">#4d4955</color>
+    <color name="colorNavList">#373240</color>
 </resources>

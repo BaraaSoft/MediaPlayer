@@ -13,14 +13,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:background">@color/colorDarkSilent</item>
+        <item name="android:background">@drawable/nav_background</item>
     </style>
     <style name="AppThemeNoActionNavItem" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:background">@color/colorDarkSilentLight</item>
+        <item name="android:background">@drawable/nav_item_background</item>
         <item name="android:textColor">@color/colorIcons</item>
     </style>
 

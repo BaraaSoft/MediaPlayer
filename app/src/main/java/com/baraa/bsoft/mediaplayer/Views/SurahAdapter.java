@@ -21,6 +21,7 @@ import com.baraa.bsoft.mediaplayer.Services.Downloader;
 import com.golshadi.majid.core.DownloadManagerPro;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -120,6 +121,10 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         return position;
     }
     /*************************************/
+
+    public void updateData(ArrayList<Surah> lst){
+
+    }
 
 
     void setDownloadIcon(FabButton fabButton,int status){

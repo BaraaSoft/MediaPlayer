@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
                 mSurahAdapter.notifyDataSetChanged();
             }
         }
-        DAL.getInstance().setContext(this).InsertListToDB(surahs);
+        DAL.getInstance().setContext(this).insertListToDB(surahs);
         return surahs;
     }
 
@@ -200,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
                             ((FabButton)view).setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
                         }
                     });
-                    mediaPlayer.setDataSource(surahUrl);
+                    mediaPlayer.setDataSource(surahUrl);// changed
+                    //mediaPlayer.setDataSource("https://quran.islamway.net/quran3/101/15276/32/077.mp3");
                     mediaPlayer.prepare();
                     mediaPlayer.start();
                     progressHelper.stopIndeterminate();

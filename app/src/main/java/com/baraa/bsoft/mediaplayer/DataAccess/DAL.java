@@ -3,6 +3,7 @@ package com.baraa.bsoft.mediaplayer.DataAccess;
 import android.content.Context;
 import android.util.Log;
 
+import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 
 import java.util.ArrayList;
@@ -29,16 +30,51 @@ public class DAL {
     }
 
     private DAL() {
-        realm = Realm.getDefaultInstance();
+
     }
 
 
     public static DAL setContext(Context context){
+        Realm.init(context);
+        realm = Realm.getDefaultInstance();
         mContext = context;
         return ourInstance;
     }
 
-    public static void InsertListToDB(final ArrayList<Surah> lst){
+
+    public static void insertListArtistToDB(final ArrayList<Artist> lst){
+        Realm.init(mContext.getApplicationContext());
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                bgRealm.insert(lst);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.d(TAG, "onError: \n"+error.toString());
+            }
+        });
+
+    }
+
+    public static RealmResults<Artist> getAllArtist(){
+        RealmQuery<Artist> query = realm.where(Artist.class);
+        return query.findAll();
+    }
+    public static RealmResults<Surah> getAllSurahBelongTo(String artistKey){
+        RealmQuery<Surah> query = realm.where(Surah.class).equalTo("artistKey",artistKey);
+        return query.findAll();
+    }
+
+    public static void insertListToDB(final ArrayList<Surah> lst){
 
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override

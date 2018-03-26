@@ -92,4 +92,14 @@
     <string name="title_quran_reciters">Popular Quran Reciters</string>
     <string name="shk_muhammad_abdulkareem">Muhammad Abdulkareem</string>
     <string name="shk_alafasy">Alafasy</string>
+    <string name="shk_maher_almueaqly">Maher Almueaqly</string>
+    <string name="shk_ahmad_bin_ali_alajmy">Ahmad Alajmy</string>
+    <string name="shk_ali_huthaify">Ali Al Huthaify</string>
+    <string name="shk_saad_al_ghamidi">Saad Al Ghamidi</string>
+    <string name="shk_al_sudais">Abdul Rahman Al-Sudais</string>
+    <string name="shk_saud_al_shuraim">Saud Al-Shuraim</string>
+    <string name="shk_siddiq_el_minshawi">Siddiq El-Minshawi</string>
+    <string name="shk_alzain_mohamed">Alzain Mohamed</string>
+    <string name="shk_mohamed_samad">Mohamed Abdus Samad</string>
+    <string name="shk_abdul_rashid_sufi">Abdul Rashid Sufi</string>
 </resources>

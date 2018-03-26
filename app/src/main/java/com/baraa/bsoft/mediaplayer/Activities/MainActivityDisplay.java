@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.baraa.bsoft.mediaplayer.DataAccess.DataBuilder;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Views.NavAdapter;
@@ -51,7 +52,8 @@ public class MainActivityDisplay extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mArtists = createArtistsList();
+        DataBuilder dataBuilder = new DataBuilder(this);
+        mArtists = dataBuilder.getAllArtists();
         ListView lvNav = (ListView) findViewById(R.id.lvNav);
         NavAdapter adapter = new NavAdapter(this,R.layout.nav_item,mArtists);
         lvNav.setAdapter(adapter);
