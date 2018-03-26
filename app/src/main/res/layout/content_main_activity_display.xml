@@ -8,4 +8,6 @@
     tools:context="com.baraa.bsoft.mediaplayer.Activities.MainActivityDisplay"
     tools:showIn="@layout/app_bar_main_activity_display">
 
+    <include layout="@layout/activity_main" />
+
 </android.support.constraint.ConstraintLayout>

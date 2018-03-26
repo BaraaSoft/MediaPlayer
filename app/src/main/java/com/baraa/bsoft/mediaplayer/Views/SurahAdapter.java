@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +75,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final Surah surah = surahslst.get(position);
+        Log.d(TAG, "getView: "+surah.toString());
         viewHolder.getTvTitle().setText(surah.getTitle());
         viewHolder.getBtnPlay().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +120,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         surahslst.clear();
         surahslst = lst;
         notifyDataSetChanged();
+        Log.d(TAG, "updateData: !!!!!!");
     }
 
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
-import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
 
 import java.util.ArrayList;
 
@@ -16,12 +15,12 @@ import java.util.ArrayList;
 public class DataBuilder {
     private Context mContext;
     private ArrayList<Artist> mArtists;
-    private SurahAdapter mSurahAdapter;
+//    private SurahAdapter mSurahAdapter;
 
-    public DataBuilder(Context ctx, SurahAdapter surahAdapter) {
+    public DataBuilder(Context ctx) {
         mContext = ctx;
         mArtists = new ArrayList<>();
-        mSurahAdapter = surahAdapter;
+//        mSurahAdapter = surahAdapter;
         DAL.getInstance().setContext(mContext).insertListArtistToDB(buildArtistData());
     }
 
@@ -68,9 +67,9 @@ public class DataBuilder {
             String x = strBuilder.append(b).append(".mp3").toString();
             Surah item = new Surah(surahArry[i],x,i,artist.getKey());
             surahs.add(item);
-            if(mSurahAdapter != null){
-                mSurahAdapter.notifyDataSetChanged();
-            }
+//            if(mSurahAdapter != null){
+//                mSurahAdapter.notifyDataSetChanged();
+//            }
         }
         DAL.getInstance().setContext(mContext).insertListToDB(surahs);
         return surahs;

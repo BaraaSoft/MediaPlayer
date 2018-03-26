@@ -31,8 +31,8 @@ public class NavAdapter extends ArrayAdapter {
         super(context, resource);
         this.mContext = context;
         this.mArtists = lstArtists;
-        if(mNavListener instanceof NavListener){
-            this.mNavListener = navListener;
+        if(navListener instanceof NavListener){
+            this.mNavListener = (NavListener) navListener;
         }else {
             throw new ClassCastException("must implement NavListener!");
         }
