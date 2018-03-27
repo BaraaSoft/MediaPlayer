@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.IOException;
 
 public class PlayService extends Service  implements MediaPlayer.OnPreparedListener,MediaPlayer.OnCompletionListener{
+    private static final String TAG = "PlayService";
     public static final String ACTION_IS_PLAYING = "action.isPlaying";
     public static final String DATA_IS_PLAYING = "isPlaying";
     public static final String ACTION_PLAY  = "action.play";
@@ -67,6 +68,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }
         mMediaPlayer = new MediaPlayer();
         try {
+            toggleUiPlayPauseIcon(false);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.setOnCompletionListener(this);
@@ -103,7 +105,9 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }
     }
 
-
+    public boolean isPlaying(){
+        return mMediaPlayer.isPlaying();
+    }
 
 
     @Override
@@ -113,7 +117,9 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     @Override
     public void onPrepared(MediaPlayer player) {
         //player.start();
+        toggleUiPlayPauseIcon(true);
         play();
     }
+
 
 }

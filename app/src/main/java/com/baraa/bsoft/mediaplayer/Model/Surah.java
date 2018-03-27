@@ -20,6 +20,7 @@ public class Surah extends RealmObject implements Serializable{
     private String url;
     private int number;
     private boolean stored;
+    private boolean isPlaying;
 
     private int progress;
     public Surah(){
@@ -34,6 +35,8 @@ public class Surah extends RealmObject implements Serializable{
         this.setKey(number+artistKey);
         this.progress = 0;
         this.stored = false;
+        this.isPlaying = false;
+        this.artistKey = artistKey;
     }
 
     public String getTitle() {
@@ -97,5 +100,13 @@ public class Surah extends RealmObject implements Serializable{
 
     public void setStored(boolean stored) {
         this.stored = stored;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 }

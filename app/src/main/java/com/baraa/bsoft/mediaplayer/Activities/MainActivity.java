@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -41,7 +40,6 @@ import com.baraa.bsoft.mediaplayer.Views.NavAdapter;
 import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
 import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import io.realm.Realm;
@@ -71,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     private static final int REQUEST = 101;
     private SurahAdapter mSurahAdapter;
     private DataBuilder mDataBuilder;
+    private int mCurrentPlayingPos = -1;
+    private Integer mCurrentArtistId = -1;
+    private ProgressHelper mProgressHelper;
 
     private PlayService mBoundService;
     private boolean isServiceBound;
@@ -117,14 +118,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         lvNav.setAdapter(adapter);
 
 
-
-
-
-
-
-
-
-        //
         //setContentView(R.layout.activity_main);
         ImageButton btnPlay = findViewById(R.id.btnPlay);
         ImageButton btnforward = findViewById(R.id.btnForward);
@@ -133,14 +126,15 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         btnforward.setOnClickListener(this);
         btnbackward.setOnClickListener(this);
 
-        builSurahList("1");
-        Object[] arry =  DAL.getInstance().setContext(this).getAllSurah().toArray();
-        mSurahs = mDataBuilder.builSurahList(mArtists.get(0)); //toArraySurah(arry); //(ArrayList<Surah>) Arrays.asList(arry); //builSurahList("1");
+
+        mSurahs = mDataBuilder.builSurahList(mArtists.get(0));
         lvClips = (ListView)findViewById(R.id.lvClips);
         mSurahAdapter = new SurahAdapter(this,R.layout.list_item, mSurahs,lvClips);
         mSurahAdapter.setmPlayListListener(this);
         lvClips.setMinimumHeight(200);
         lvClips.setAdapter(mSurahAdapter);
+
+        //mSurahAdapter.getViewByPosition(0,lvClips)
 
         mediaPlayer = new MediaPlayer();
         for (Surah item:DAL.getAllSurah()) {
@@ -148,35 +142,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         }
     }
 
-
-    public ArrayList<Surah> toArraySurah(Object[] objects){
-        ArrayList<Surah> surahs = new ArrayList<>();
-        for (Object object: objects){
-            surahs.add((Surah) object);
-        }
-        return surahs;
-    }
-
-
-    public ArrayList<Surah> builSurahList(String artistKey){
-        ArrayList<Surah> surahs = new ArrayList<>();
-        //"https://quran.islamway.net/quran3/324/001.mp3";
-        String baseUrl = getResources().getString(R.string.base_url);
-        String[] surahArry = getResources().getStringArray(R.array.surahs);
-        String decm = String.format("%03d",0);
-        for (int i=0;i<surahArry.length;i++){
-            StringBuilder strBuilder = new StringBuilder(baseUrl);
-            String b = String.format("%03d",i+1);
-            String x = strBuilder.append(b).append(".mp3").toString();
-            Surah item = new Surah(surahArry[i],x,i,artistKey);
-            surahs.add(item);
-            if(mSurahAdapter != null){
-                mSurahAdapter.notifyDataSetChanged();
-            }
-        }
-        DAL.getInstance().setContext(this).insertListToDB(surahs);
-        return surahs;
-    }
 
     @Override
     protected void onResume() {
@@ -197,8 +162,13 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(PlayService.ACTION_IS_PLAYING)){
                 boolean isPlaying = intent.getExtras().getBoolean(PlayService.DATA_IS_PLAYING);
-            }
+                if(isPlaying){
+                    mProgressHelper.stopIndeterminate();
+                }
+                else {
 
+                }
+            }
         }
     };
     private void registeringReceiver(){
@@ -211,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         Intent intent = new Intent(this,PlayService.class);
         intent.putExtra(PlayService.DATA_URL,url);
         intent.setAction(PlayService.ACTION_PLAY);
+        startService(intent);
         bindService(intent,mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
@@ -225,51 +196,30 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
     @Override
     public void onItemListClicked(Surah surah, int index, final FabButton view) {
-        final int x = index;
-        final ProgressHelper progressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
-        progressHelper.startIndeterminate();
-        final String surahUrl = mSurahs.get(x).getUrl();
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (mediaPlayer !=null){
-                    mediaPlayer.stop();
-                    if (lastPlayButton != null){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
-                            }
-                        });
-                    }
+        final String surahUrl = mSurahs.get(index).getUrl();
+        if(lastPlayButton != null){
+            lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
+        }
+        // run buffering progress online for new media
+        mProgressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
+        if(mCurrentPlayingPos != index || mCurrentArtistId != Integer.parseInt(surah.getArtistKey()) ){
+            mProgressHelper.startIndeterminate();
+            startMediaPlayerService(surahUrl);
+            view.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
+        }else {
+            if (isServiceBound){
+                if (mBoundService.isPlaying()){
+                    view.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
+                }else {
+                    view.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
                 }
-                //Log.d(TAG, "onItemListClicked: "+mSurahs.get(x).getUrl());
-                try {
-                    mediaPlayer = new MediaPlayer();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            lastPlayButton = (FabButton)view;
-                            ((FabButton)view).setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
-                        }
-                    });
-                    mediaPlayer.setDataSource(surahUrl);// changed
-                    //mediaPlayer.setDataSource("https://quran.islamway.net/quran3/101/15276/32/077.mp3");
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
-                    progressHelper.stopIndeterminate();
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-                            if(lastPlayButton != null)
-                                lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                mBoundService.toggle();
             }
-        });
+        }
+        mCurrentPlayingPos = index;
+        Log.d(TAG, "onItemListClicked:: "+surah.getArtistKey());
+        mCurrentArtistId = Integer.parseInt(surah.getArtistKey());
+        lastPlayButton = view;
     }
 
     @Override
@@ -292,8 +242,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     }
 
 
-
-
     public boolean checkStoragePermissionBeforeAccess(){
         if (Build.VERSION.SDK_INT >= 23) {
             String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -310,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
             return true;
         }
     }
+
     private static boolean hasPermissions(Context context, String... permissions) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {

@@ -80,7 +80,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         viewHolder.getBtnPlay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPlayListListener.onItemListClicked(surah,position,(FabButton)viewHolder.getBtnPlay());
+                mPlayListListener.onItemListClicked(surahslst.get(position),position,(FabButton)viewHolder.getBtnPlay());
             }
         });
         setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
