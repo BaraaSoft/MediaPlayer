@@ -3,12 +3,20 @@ package com.baraa.bsoft.mediaplayer.Services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -24,6 +32,8 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     public static final String ACTION_PLAY  = "action.play";
     public static final String DATA_URL = "url";
     private MediaPlayer mMediaPlayer;
+
+    private int mSoundVolume = 0;
 
     // notification vars
     private String mSubTitle = "",mTitle = "";
@@ -165,13 +175,20 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
     public void play(){
         if(mMediaPlayer != null){
-            mMediaPlayer.start();
+            //mMediaPlayer.start();
+            if (Build.VERSION.SDK_INT  < Build.VERSION_CODES.O) {
+                requestAudioFocus_preO();
+            }else {
+                requestAudioFocus_postO();
+            }
+            registerReceiver(mAudioBecomeNoisyReceiver, mIntentFilterNoisy);
         }
 
     }
     public void pause(){
         if(mMediaPlayer != null){
             mMediaPlayer.pause();
+            unregisterReceiver(mAudioBecomeNoisyReceiver);
         }
     }
     public void stop(){
@@ -179,6 +196,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
             mMediaPlayer.stop();
             mMediaPlayer.release();
             mMediaPlayer = null;
+            unregisterReceiver(mAudioBecomeNoisyReceiver);
         }
     }
 
@@ -188,6 +206,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }else {
             play();
         }
+        // to refresh notification icons & action
         showNotification(mImgRes,mTitle,mSubTitle);
     }
 
@@ -199,6 +218,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
 
+        mAudioManager.abandonAudioFocus(afChangeListener);
     }
     @Override
     public void onPrepared(MediaPlayer player) {
@@ -208,4 +228,87 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     }
 
 
+    // requesting audio focus
+
+    private boolean mPlayingBeforeInterruptions = false;
+    private AudioManager mAudioManager;
+    private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    if(mPlayingBeforeInterruptions){
+                        toggle();
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mSoundVolume, 0);
+                    }
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    toggle();
+                    mAudioManager.abandonAudioFocus(afChangeListener);
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    if(isPlaying()){
+                        mPlayingBeforeInterruptions = true;
+                    }else {
+                        mPlayingBeforeInterruptions = false;
+                    }
+                    toggle();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    // ... pausing or ducking depends on your app
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,1, 0);
+                    break;
+            }
+        }
+    };
+
+    private void requestAudioFocus_preO(){
+        mAudioManager = (AudioManager)getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        int resultCode = mAudioManager.requestAudioFocus(afChangeListener,
+                // Use the music stream.
+                AudioManager.STREAM_MUSIC,
+                // Request permanent focus.
+                AudioManager.AUDIOFOCUS_GAIN);
+        mSoundVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        if (resultCode == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            // Start playback
+            mMediaPlayer.start();
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void requestAudioFocus_postO(){
+        mAudioManager = (AudioManager)getBaseContext().getSystemService(Context.AUDIO_SERVICE);
+        AudioAttributes mPlaybackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        AudioFocusRequest mFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(mPlaybackAttributes)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(afChangeListener)
+                .build();
+        mSoundVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        int res = mAudioManager.requestAudioFocus(mFocusRequest);
+        if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            mMediaPlayer.start();
+        }
+    }
+
+
+    // handling noise when headphone unplugged
+    private class AudioBecomeNoisyReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)){
+                pause();
+            }
+        }
+    }
+
+    private IntentFilter mIntentFilterNoisy = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private AudioBecomeNoisyReceiver  mAudioBecomeNoisyReceiver = new AudioBecomeNoisyReceiver();
 }
