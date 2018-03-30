@@ -35,6 +35,7 @@ import com.baraa.bsoft.mediaplayer.DataAccess.DataBuilder;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
+import com.baraa.bsoft.mediaplayer.Services.Constants;
 import com.baraa.bsoft.mediaplayer.Services.PlayService;
 import com.baraa.bsoft.mediaplayer.Views.NavAdapter;
 import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     private ArrayList<Surah> mSurahs;
     private ListView lvClips;
     private MediaPlayer mediaPlayer;
-    private FabButton lastPlayButton;
 
     private ArrayList<Artist> mArtists;
 
@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     private static final int REQUEST = 101;
     private SurahAdapter mSurahAdapter;
     private DataBuilder mDataBuilder;
+
     private int mCurrentPlayingPos = -1;
     private Integer mCurrentArtistId = -1;
+    private FabButton lastPlayButton;
     private ProgressHelper mProgressHelper;
 
     private PlayService mBoundService;
@@ -134,10 +136,11 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         lvClips.setMinimumHeight(200);
         lvClips.setAdapter(mSurahAdapter);
 
+
         //mSurahAdapter.getViewByPosition(0,lvClips)
 
         mediaPlayer = new MediaPlayer();
-        for (Surah item:DAL.getAllSurah()) {
+        for (Surah item:DAL.getInstance().getAllSurah()) {
             Log.d(TAG, "onCreate: Data In Realm \n"+item.getUrl());
         }
     }
@@ -162,13 +165,15 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(PlayService.ACTION_IS_PLAYING)){
                 boolean isPlaying = intent.getExtras().getBoolean(PlayService.DATA_IS_PLAYING);
-                if(isPlaying){
+                if(isPlaying){ // stop progress animation when start playing
                     mProgressHelper.stopIndeterminate();
-                }
-                else {
-
+                    lastPlayButton.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
+                }else {
+                    lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
                 }
             }
+            // change the state of listPlayIcon from notification
+            //if()
         }
     };
     private void registeringReceiver(){
@@ -177,10 +182,13 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     }
 
 
-    private void startMediaPlayerService(String url){
+    private void startMediaPlayerService(String url,Surah surah){
         Intent intent = new Intent(this,PlayService.class);
         intent.putExtra(PlayService.DATA_URL,url);
-        intent.setAction(PlayService.ACTION_PLAY);
+        intent.putExtra(Constants.NOTIFICATION_ID.IMG,getArtistImgResWithID(surah.getArtistKey()));
+        intent.putExtra(Constants.NOTIFICATION_ID.SUD_TEXT,surah.getTitle());
+        intent.putExtra(Constants.NOTIFICATION_ID.TITLE,getResources().getString(R.string.notificationPlayTitle));
+        intent.setAction(Constants.ACTION.ACTION_START_FOREGROUND);
         startService(intent);
         bindService(intent,mServiceConnection,Context.BIND_AUTO_CREATE);
     }
@@ -194,6 +202,16 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         }
     }
 
+
+    public int getArtistImgResWithID(String id){
+        for(Artist artist:mArtists){
+            if(artist.getKey().equals(id)){
+                return artist.getImageResourceId();
+            }
+        }
+        return -1;
+    }
+
     @Override
     public void onItemListClicked(Surah surah, int index, final FabButton view) {
         final String surahUrl = mSurahs.get(index).getUrl();
@@ -204,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mProgressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
         if(mCurrentPlayingPos != index || mCurrentArtistId != Integer.parseInt(surah.getArtistKey()) ){
             mProgressHelper.startIndeterminate();
-            startMediaPlayerService(surahUrl);
+            startMediaPlayerService(surahUrl,mSurahs.get(index));
             view.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
         }else {
             if (isServiceBound){

@@ -89,6 +89,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="notificationPlayTitle">Listening to Quran</string>
     <string name="title_quran_reciters">Popular Quran Reciters</string>
     <string name="shk_muhammad_abdulkareem">Muhammad Abdulkareem</string>
     <string name="shk_alafasy">Alafasy</string>

@@ -95,7 +95,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
 
             }
         });
-        return convertView;
+        return  convertView;
     }
 
     /*** To prevent recycling ListView Item ***

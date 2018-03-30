@@ -19,8 +19,8 @@ import io.realm.RealmResults;
 public class DAL {
     private static final String TAG = "DAL";
     private static DAL ourInstance = null;
-    private static Realm realm;
-    private static Context mContext;
+    private  Realm realm;
+    private  Context mContext;
     public static DAL getInstance() {
         if(ourInstance == null){
             ourInstance = new DAL();
@@ -34,7 +34,7 @@ public class DAL {
     }
 
 
-    public static DAL setContext(Context context){
+    public  DAL setContext(Context context){
         Realm.init(context);
         realm = Realm.getDefaultInstance();
         mContext = context;
@@ -42,7 +42,7 @@ public class DAL {
     }
 
 
-    public static void insertListArtistToDB(final ArrayList<Artist> lst){
+    public  void insertListArtistToDB(final ArrayList<Artist> lst){
         Realm.init(mContext.getApplicationContext());
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -65,16 +65,16 @@ public class DAL {
 
     }
 
-    public static RealmResults<Artist> getAllArtist(){
+    public  RealmResults<Artist> getAllArtist(){
         RealmQuery<Artist> query = realm.where(Artist.class);
         return query.findAll();
     }
-    public static RealmResults<Surah> getAllSurahBelongTo(String artistKey){
+    public  RealmResults<Surah> getAllSurahBelongTo(String artistKey){
         RealmQuery<Surah> query = realm.where(Surah.class).equalTo("artistKey",artistKey);
         return query.findAll();
     }
 
-    public static void insertListToDB(final ArrayList<Surah> lst){
+    public  void insertListToDB(final ArrayList<Surah> lst){
 
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -96,12 +96,12 @@ public class DAL {
 
     }
 
-    public static RealmResults<Surah> getAllSurah(){
+    public  RealmResults<Surah> getAllSurah(){
         RealmQuery<Surah> query = realm.where(Surah.class);
         return query.findAll();
     }
 
-    public static void updateProgress(final String id ,final int progress){
+    public  void updateProgress(final String id ,final int progress){
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {
@@ -116,7 +116,7 @@ public class DAL {
         });
     }
 
-    public static double getProgress(final String id){
+    public  double getProgress(final String id){
         Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
         return surah.getProgress();
     }
