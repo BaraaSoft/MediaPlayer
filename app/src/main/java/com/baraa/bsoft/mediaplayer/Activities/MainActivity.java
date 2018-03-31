@@ -102,7 +102,12 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         setSupportActionBar(toolbar);
         // Realm Database:
         Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
+        //RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
+        RealmConfiguration config = new RealmConfiguration
+                .Builder()
+                .name("myrealm.realm")
+                .deleteRealmIfMigrationNeeded()
+                .build();
         Realm.setDefaultConfiguration(config);
 
 
@@ -138,14 +143,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         lvClips.setMinimumHeight(200);
         lvClips.setAdapter(mSurahAdapter);
 
-
-        //mSurahAdapter.getViewByPosition(0,lvClips)
-
-        mediaPlayer = new MediaPlayer();
-        for (Surah item:DAL.getInstance().getAllSurah()) {
-            //Log.d(TAG, "onCreate: Data In Realm \n"+item.getUrl());
-        }
-
+        DAL.getInstance().setContext(this).initMedia();
     }
 
 
@@ -153,10 +151,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     protected void onResume() {
         super.onResume();
         registeringReceiver();
-        if(isServiceBound){
-            mBoundService.setSurahs(mSurahs);
-        }
-        DAL.getInstance().setContext(this).initMedia();
     }
 
 
@@ -191,13 +185,15 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
     private void startMediaPlayerService(String url,Surah surah){
         Intent intent = new Intent(this,PlayService.class);
+        intent.setClass(this, PlayService.class);
         intent.putExtra(PlayService.DATA_URL,url);
         intent.putExtra(Constants.NOTIFICATION_ID.IMG,getArtistImgResWithID(surah.getArtistKey()));
         intent.putExtra(Constants.NOTIFICATION_ID.SUD_TEXT,surah.getTitle());
         intent.putExtra(Constants.NOTIFICATION_ID.TITLE,getResources().getString(R.string.notificationPlayTitle));
         intent.setAction(Constants.ACTION.ACTION_START_FOREGROUND);
         if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.O){
-            startForegroundService(intent);
+           // startForegroundService(intent);
+            startService(intent);
         }else {
             startService(intent);
         }
@@ -369,9 +365,5 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         TextView tvSelectedShk = findViewById(R.id.tvSelectedShk);
         imgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
         tvSelectedShk.setText(artist.getName());
-
-        if(isServiceBound){
-            mBoundService.setSurahs(mSurahs);
-        }
     }
 }
