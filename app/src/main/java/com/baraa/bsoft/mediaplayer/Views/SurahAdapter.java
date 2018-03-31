@@ -75,7 +75,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final Surah surah = surahslst.get(position);
-        Log.d(TAG, "getView: "+surah.toString());
+        //Log.d(TAG, "getView: "+surah.toString());
         viewHolder.getTvTitle().setText(surah.getTitle());
         viewHolder.getBtnPlay().setOnClickListener(new View.OnClickListener() {
             @Override

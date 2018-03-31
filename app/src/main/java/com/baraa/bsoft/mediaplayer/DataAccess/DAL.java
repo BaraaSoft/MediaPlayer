@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.baraa.bsoft.mediaplayer.Model.Artist;
+import com.baraa.bsoft.mediaplayer.Model.CurrentMedia;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class DAL {
             ourInstance = new DAL();
             return ourInstance;
         }
-        return  ourInstance;
+        return ourInstance;
     }
 
     private DAL() {
@@ -96,6 +97,59 @@ public class DAL {
 
     }
 
+    public void initMedia(){
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                CurrentMedia media = bgRealm.createObject(CurrentMedia.class,"1");
+                media.setArtistKey("1");
+                media.setProgress(0);
+                media.setSurahkey("1");
+                media.setIndex(1);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.e(TAG, "onError: >>>>>>>",error );
+                // Transaction failed and was automatically canceled.
+            }
+        });
+    }
+
+    public void updateCurrentMedia(final CurrentMedia media){
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                CurrentMedia currentMedia =  bgRealm.where(CurrentMedia.class).equalTo("key","1").findFirst();
+                currentMedia.setArtistKey(media.getArtistKey());
+                currentMedia.setProgress(media.getProgress());
+                currentMedia.setSurahkey(media.getSurahkey());
+                currentMedia.setIndex(media.getIndex());
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.d(TAG, "onError: >>> \n"+error.toString());
+            }
+        });
+
+    }
+    public CurrentMedia getCurrentMedia(){
+        CurrentMedia media = realm.where(CurrentMedia.class).equalTo("key", "1").findFirst();
+        return media;
+    }
+
     public  RealmResults<Surah> getAllSurah(){
         RealmQuery<Surah> query = realm.where(Surah.class);
         return query.findAll();
@@ -115,6 +169,7 @@ public class DAL {
             }
         });
     }
+
 
     public  double getProgress(final String id){
         Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();

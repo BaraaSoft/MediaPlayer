@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.DataAccess.DataBuilder;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
+import com.baraa.bsoft.mediaplayer.Model.CurrentMedia;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.Constants;
@@ -141,8 +143,9 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
         mediaPlayer = new MediaPlayer();
         for (Surah item:DAL.getInstance().getAllSurah()) {
-            Log.d(TAG, "onCreate: Data In Realm \n"+item.getUrl());
+            //Log.d(TAG, "onCreate: Data In Realm \n"+item.getUrl());
         }
+
     }
 
 
@@ -150,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     protected void onResume() {
         super.onResume();
         registeringReceiver();
+        if(isServiceBound){
+            mBoundService.setSurahs(mSurahs);
+        }
+        DAL.getInstance().setContext(this).initMedia();
     }
 
 
@@ -189,7 +196,11 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         intent.putExtra(Constants.NOTIFICATION_ID.SUD_TEXT,surah.getTitle());
         intent.putExtra(Constants.NOTIFICATION_ID.TITLE,getResources().getString(R.string.notificationPlayTitle));
         intent.setAction(Constants.ACTION.ACTION_START_FOREGROUND);
-        startService(intent);
+        if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.O){
+            startForegroundService(intent);
+        }else {
+            startService(intent);
+        }
         bindService(intent,mServiceConnection,Context.BIND_AUTO_CREATE);
     }
 
@@ -238,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         Log.d(TAG, "onItemListClicked:: "+surah.getArtistKey());
         mCurrentArtistId = Integer.parseInt(surah.getArtistKey());
         lastPlayButton = view;
+        DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey(),index,0));
     }
 
     @Override
@@ -355,7 +367,11 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
         ImageView imgSeletedShk = findViewById(R.id.imgSelectedShk);
         TextView tvSelectedShk = findViewById(R.id.tvSelectedShk);
-        imgSeletedShk.setImageDrawable(getDrawable(artist.getImageResourceId()));
+        imgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
         tvSelectedShk.setText(artist.getName());
+
+        if(isServiceBound){
+            mBoundService.setSurahs(mSurahs);
+        }
     }
 }
