@@ -161,11 +161,12 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
              notification = new NotificationCompat.Builder(this, "101")
                     .setContentText(appTitle)
-                    .setTicker("Listening to Quran")
-                    .setContentText(surahTitle)
-                    .setSmallIcon(resImg)
-                    .setLargeIcon(Bitmap.createScaledBitmap(notificationImg,100,100,false))
-                    .setContentIntent(pendingIntent)
+                     .setContentTitle("Baraa")
+                     .setContentText(surahTitle)
+                     .setTicker("Listening to Quran")
+                     .setSmallIcon(resImg)
+                     .setLargeIcon(Bitmap.createScaledBitmap(notificationImg,100,100,false))
+                     .setContentIntent(pendingIntent)
                      .addAction(actionPrev)
                      .addAction(actionPlayPause)
                      .addAction(actionNext)
@@ -178,16 +179,17 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }else {
              notification = new NotificationCompat.Builder(this,"Quran")
                     .setContentText(appTitle)
-                    .setTicker("Listening to Quran")
-                    .setContentText(surahTitle)
-                    .setSmallIcon(resImg)
-                    .setLargeIcon(Bitmap.createScaledBitmap(notificationImg,100,100,false))
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(false)
-                    .addAction(android.R.drawable.ic_media_previous,"previous",prevPendingIntent)
-                    .addAction(iconPlayPause,strPlayPause, playPendingIntent)
-                    .addAction(android.R.drawable.ic_media_next,"next",nextPendingIntent)
-                    .build();
+                     .setContentTitle("Baraa")
+                     .setContentText(surahTitle)
+                     .setTicker("Listening to Quran")
+                     .setSmallIcon(resImg)
+                     .setLargeIcon(Bitmap.createScaledBitmap(notificationImg,100,100,false))
+                     .setContentIntent(pendingIntent)
+                     .setOngoing(false)
+                     .addAction(android.R.drawable.ic_media_previous,"previous",prevPendingIntent)
+                     .addAction(iconPlayPause,strPlayPause, playPendingIntent)
+                     .addAction(android.R.drawable.ic_media_next,"next",nextPendingIntent)
+                     .build();
             Log.d(TAG, "showNotification: Android Pre o");
             mNotifyManager.notify(101, notification);
             //startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
@@ -316,7 +318,6 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
 
     // requesting audio focus
-
     private boolean mPlayingBeforeInterruptions = false;
     private AudioManager mAudioManager;
     private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -402,5 +403,29 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
     private IntentFilter mIntentFilterNoisy = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     private AudioBecomeNoisyReceiver  mAudioBecomeNoisyReceiver = new AudioBecomeNoisyReceiver();
+
+
+    // SeekBar Section
+
+    public void seekTo(int value){
+        if(mMediaPlayer != null){
+            mMediaPlayer.seekTo(value);
+        }
+    }
+    public int getMediaDuration(){
+        if(mMediaPlayer != null){
+            return mMediaPlayer.getDuration();
+        }else {
+            return 0;
+        }
+    }
+
+    public int getCurrentMediaProgress(){
+        if(mMediaPlayer !=null){
+            return mMediaPlayer.getCurrentPosition();
+        }else {
+            return 0;
+        }
+    }
 
 }

@@ -9,7 +9,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
@@ -59,12 +60,20 @@ import mbanje.kurt.fabbutton.FabButton;
 
 
 public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener,
-        NavigationView.OnNavigationItemSelectedListener,NavAdapter.NavListener{
+        NavigationView.OnNavigationItemSelectedListener,NavAdapter.NavListener,SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "MainActivity";
+    private ImageButton mBtnPlayUI;
+    private ImageButton mBtnforwardUI;
+    private ImageButton mBtnbackwardUI;
+    private SeekBar mSeekBar;
+    private int mSeekValue = 0;
+    private ImageView mImgSeletedShk;
+    private ImageView mImgCurrentShk;
+    private TextView mTvSelectedShk;
+
+    private ThreadSeekBar mThreadSeekBar;
     private ArrayList<Surah> mSurahs;
     private ListView lvClips;
-    private MediaPlayer mediaPlayer;
-
     private ArrayList<Artist> mArtists;
 
     private Context mContext=MainActivity.this;
@@ -127,13 +136,18 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         lvNav.setAdapter(adapter);
 
 
-        //setContentView(R.layout.activity_main);
-        ImageButton btnPlay = findViewById(R.id.btnPlay);
-        ImageButton btnforward = findViewById(R.id.btnForward);
-        ImageButton btnbackward = findViewById(R.id.btnBackward);
-        btnPlay.setOnClickListener(this);
-        btnforward.setOnClickListener(this);
-        btnbackward.setOnClickListener(this);
+        // Main UI Control
+        mBtnPlayUI = findViewById(R.id.btnPlay);
+        mBtnforwardUI = findViewById(R.id.btnForward);
+        mBtnbackwardUI = findViewById(R.id.btnBackward);
+        mBtnPlayUI.setOnClickListener(this);
+        mBtnforwardUI.setOnClickListener(this);
+        mBtnbackwardUI.setOnClickListener(this);
+        mSeekBar =(SeekBar)findViewById(R.id.seekBar);
+        mSeekBar.setOnSeekBarChangeListener(this);
+        mImgSeletedShk = findViewById(R.id.imgSelectedShk);
+        mImgCurrentShk = findViewById(R.id.imgCurrentShk);
+        mTvSelectedShk = findViewById(R.id.tvSelectedShk);
 
 
         mSurahs = mDataBuilder.builSurahList(mArtists.get(0));
@@ -151,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     protected void onResume() {
         super.onResume();
         registeringReceiver();
+
     }
 
 
@@ -168,9 +183,21 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
                 boolean isPlaying = intent.getExtras().getBoolean(PlayService.DATA_IS_PLAYING);
                 if(isPlaying){ // stop progress animation when start playing
                     mProgressHelper.stopIndeterminate();
+                    mBtnPlayUI.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle_outline_white_24dp));
                     lastPlayButton.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
+                    if(isServiceBound){
+                        mSeekBar.setMax(mBoundService.getMediaDuration());
+                    }
                 }else {
-                    lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
+                    if (lastPlayButton != null){
+                        lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
+                    }
+                    mBtnPlayUI.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle_outline_white_24dp));
+                    if(mThreadSeekBar != null)
+                        mThreadSeekBar.setStop(true);
+                    mThreadSeekBar = null;
+                    mThreadSeekBar = new ThreadSeekBar();
+                    mThreadSeekBar.start();
                 }
             }
             // change the state of listPlayIcon from notification
@@ -256,16 +283,76 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
     @Override
     public void onClick(View view) {
+        Intent intent = new Intent(this,PlayService.class);
+        intent.setClass(this, PlayService.class);
         switch (view.getId()){
             case R.id.btnPlay:
+                intent.setAction(Constants.ACTION.ACTION_PLAY);
                 break;
             case R.id.btnForward:
+                intent.setAction(Constants.ACTION.ACTION_NEXT);
                 break;
             case R.id.btnBackward:
+                intent.setAction(Constants.ACTION.ACTION_PREV);
                 break;
         }
+        if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.O){
+            // startForegroundService(intent);
+            startService(intent);
+        }else {
+            startService(intent);
+        }
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+        mSeekValue = progress;
 
     }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        if(isServiceBound){
+            mBoundService.seekTo(mSeekValue);
+        }
+    }
+
+    class  ThreadSeekBar extends  Thread {
+        private boolean stop = false;
+        public void run() {
+
+            while (!stop) {
+                try {
+                    Thread.sleep(1000);
+                    if (isServiceBound){
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSeekValue =   mBoundService.getCurrentMediaProgress();
+                            }
+                        });
+                    }
+
+                } catch (Exception e) {
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSeekBar.setProgress(mSeekValue);
+                    }
+                });
+            }
+        }
+        public void setStop(boolean stop) {
+            this.stop = stop;
+        }
+    }
+
+
 
 
     public boolean checkStoragePermissionBeforeAccess(){
@@ -360,10 +447,9 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mSurahs = mDataBuilder.builSurahList(artist);
         mSurahAdapter.updateData(mSurahs);
 
-
-        ImageView imgSeletedShk = findViewById(R.id.imgSelectedShk);
-        TextView tvSelectedShk = findViewById(R.id.tvSelectedShk);
-        imgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
-        tvSelectedShk.setText(artist.getName());
+        mImgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
+        mImgCurrentShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
+        mTvSelectedShk.setText(artist.getName());
     }
+
 }

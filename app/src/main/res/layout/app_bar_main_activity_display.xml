@@ -11,12 +11,37 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <RelativeLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="65dp">
+            <android.support.v7.widget.Toolbar
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+            <ImageView
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="40dp"
+                android:id="@+id/imgCurrentShk"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:scaleType="centerCrop"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/shk_muhammad_abdulkareem_bezzy" />
+        </RelativeLayout>
+
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
     </android.support.design.widget.AppBarLayout>
 
