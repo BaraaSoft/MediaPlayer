@@ -41,7 +41,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     private int mSoundVolume = 0;
     // notification vars
     private String mSubTitle = "",mTitle = "";
-    int mImgRes = -1;
+    int mImgRes = R.drawable.shk_muhammad_abdulkareem_bezzy;
 
 
     private final IBinder mBinder = new PlayerBinder();
@@ -85,6 +85,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }
         else if(intent.getAction().equals(Constants.ACTION.ACTION_NEXT)){
             CurrentMedia media = DAL.getInstance().setContext(getApplicationContext()).getCurrentMedia();
+            if (media == null) return START_STICKY;
             int currentIndex = media.getIndex();
             Log.d(TAG, "onStartCommand:"+currentIndex);
             if(currentIndex +1 < 51){
@@ -100,6 +101,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }
         else if(intent.getAction().equals(Constants.ACTION.ACTION_PREV)){
             CurrentMedia media = DAL.getInstance().setContext(getApplicationContext()).getCurrentMedia();
+            if (media == null) return START_STICKY;
             int currentIndex = media.getIndex();
             Log.d(TAG, "onStartCommand:"+currentIndex);
             if(currentIndex -1 > -1 ){
@@ -229,13 +231,10 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onDestroy() {
-        if (mMediaPlayer != null) mMediaPlayer.release();
-        unregisterReceiver(mAudioBecomeNoisyReceiver);
-        if (mMediaPlayer !=null){
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
+        stop();
+        //unregisterReceiver(mAudioBecomeNoisyReceiver);
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
         super.onDestroy();
     }
 
@@ -284,11 +283,11 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
             mMediaPlayer.stop();
             mMediaPlayer.release();
             mMediaPlayer = null;
-            unregisterReceiver(mAudioBecomeNoisyReceiver);
         }
     }
 
     public void toggle(){
+        if (mMediaPlayer == null)return;
         if(mMediaPlayer.isPlaying()){
             pause();
         }else {
@@ -298,6 +297,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     }
 
     public boolean isPlaying(){
+        if(mMediaPlayer == null) return false;
         return mMediaPlayer.isPlaying();
     }
 
@@ -330,7 +330,8 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                     }
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS:
-                    toggle();
+                    //toggle();
+                    pause();
                     mAudioManager.abandonAudioFocus(afChangeListener);
                     unregisterReceiver(mAudioBecomeNoisyReceiver);
                     break;
@@ -341,7 +342,6 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                         mPlayingBeforeInterruptions = false;
                     }
                     pause();
-                    unregisterReceiver(mAudioBecomeNoisyReceiver);
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                     // ... pausing or ducking depends on your app
@@ -358,7 +358,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 AudioManager.STREAM_MUSIC,
                 // Request permanent focus.
                 AudioManager.AUDIOFOCUS_GAIN);
-        mSoundVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        mSoundVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         if (resultCode == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start playback
@@ -380,7 +380,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 .setAcceptsDelayedFocusGain(true)
                 .setOnAudioFocusChangeListener(afChangeListener)
                 .build();
-        mSoundVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        mSoundVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         int res = mAudioManager.requestAudioFocus(mFocusRequest);
         if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
