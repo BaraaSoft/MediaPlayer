@@ -3,6 +3,7 @@ package com.baraa.bsoft.mediaplayer.Views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class NavAdapter extends ArrayAdapter {
         }
         final Artist artist = mArtists.get(position);
         viewHolder.getTvShk().setText(artist.getName());
-        viewHolder.getImgShk().setImageDrawable(mContext.getDrawable(artist.getImageResourceId()));
+        viewHolder.getImgShk().setImageDrawable(ContextCompat.getDrawable(mContext,artist.getImageResourceId()));
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

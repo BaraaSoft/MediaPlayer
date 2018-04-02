@@ -40,8 +40,8 @@
         <item>As-Saffat</item>
         <item>Sad</item>
         <item>Az-Zumar</item>
-        <item>Al-Mu\'min</item>
-        <item>Ha Mim</item>
+        <item>Ghafir</item>
+        <item>Fussilat</item>
         <item>Ash-Shura</item>
         <item>Az-Zukhruf</item>
         <item>Ad-Dukhan</item>
@@ -81,6 +81,155 @@
         <item>An-Naba\'</item>
         <item>An-Nazi\'at</item>
         <item>\'Abasa</item>
+        <item>At-Takwir</item>
+        <item>Al-Infitar</item>
+        <item>Al-Mutaffifin</item>
+        <item>Al-Inshiqaq</item>
+        <item>Al-Burooj</item>
+        <item>At-Tariq</item>
+        <item>Al-A\'la</item>
+        <item>Al-Ghashiyah</item>
+        <item>Al-Fajr</item>
+        <item>Al-Balad</item>
+        <item>Ash-Shams</item>
+        <item>Al-Layl</item>
+        <item>Ad-Duhaa</item>
+        <item>Ash-Sharh</item>
+        <item>At-Tin</item>
+        <item>Al-Alaq</item>
+        <item>Al-Qadr</item>
+        <item>Al-Bayyina</item>
+        <item>Az-Zalzalah</item>
+        <item>Al-Adiyat</item>
+        <item>Al-Qariah</item>
+        <item>At-Takathur</item>
+        <item>Al-Asr</item>
+        <item>Al-Humazah</item>
+        <item>Al-Fil</item>
+        <item>Quraysh</item>
+        <item>Al-Maun</item>
+        <item>Al-Kawthar</item>
+        <item>Al-Kafirun</item>
+        <item>An-Nasr</item>
+        <item>Al-Masad</item>
+        <item>Al-Ikhlas</item>
+        <item>Al-Falaq</item>
+        <item>Surat An-Nas</item>
+    </string-array>
+    <string-array name="surahs_arabic">
+        <item>Al-Fatihah</item>
+        <item>سورة البقرة</item>
+        <item>سورة آل عمران</item>
+        <item>سورة النساء</item>
+        <item>سورة المائدة</item>
+        <item>سورة الأنعام</item>
+        <item>سورة الأعراف</item>
+        <item>سورة الأنفال</item>
+        <item>سورة التوبة</item>
+        <item>سورة يونس</item>
+        <item>سورة هود</item>
+        <item>سورة يوسف</item>
+        <item>سورة الرعد</item>
+        <item>سورة إبراهيم</item>
+        <item>سورة الحجر</item>
+        <item>سورة النحل</item>
+        <item>سورة الإسراء</item>
+        <item>سورة الكهف</item>
+        <item>سورة مريم</item>
+        <item>سورة طه</item>
+        <item>سورة الأنبياء</item>
+        <item>سورة الحج</item>
+        <item>سورة المؤمنون</item>
+        <item>سورة النّور</item>
+        <item>سورة الفرقان</item>
+        <item>سورة الشعراء</item>
+        <item>سورة النّمل</item>
+        <item>سورة القصص</item>
+        <item>سورة العنكبوت</item>
+        <item>سورة الرّوم</item>
+        <item>سورة لقمان</item>
+        <item>سورة السجدة</item>
+        <item>سورة الأحزاب</item>
+        <item>سورة سبأ</item>
+        <item>سورة فاطر</item>
+        <item>سورة يس</item>
+        <item>سورة الصافات</item>
+        <item>سورة ص</item>
+        <item>سورة الزمر</item>
+        <item>سورة غافر</item>
+        <item>سورة فصّلت</item>
+        <item>سورة الشورى</item>
+        <item>سورة الزخرف</item>
+        <item>سورة الدّخان</item>
+        <item>سورة الجاثية</item>
+        <item>سورة الأحقاف</item>
+        <item>سورة محمد</item>
+        <item>سورة الفتح</item>
+        <item>سورة الحجرات</item>
+        <item>سورة ق</item>
+        <item>سورة الذاريات</item>
+        <item>سورة الطور</item>
+        <item>سورة النجم</item>
+        <item>سورة القمر</item>
+        <item>سورة الرحمن</item>
+        <item>سورة الواقعة</item>
+        <item>سورة الحديد</item>
+        <item>سورة المجادلة</item>
+        <item>سورة الحشر</item>
+        <item>سورة الممتحنة</item>
+        <item>سورة الصف</item>
+        <item>سورة الجمعة</item>
+        <item>سورة المنافقون</item>
+        <item>سورة التغابن</item>
+        <item>سورة الطلاق</item>
+        <item>سورة التحريم</item>
+        <item>سورة الملك</item>
+        <item>سورة القلم</item>
+        <item>سورة الحاقة</item>
+        <item>سورة المعارج</item>
+        <item>سورة نوح</item>
+        <item>سورة الجن</item>
+        <item>سورة المزّمّل</item>
+        <item>سورة المدّثر</item>
+        <item>سورة القيامة</item>
+        <item>سورة الإنسان</item>
+        <item>سورة المرسلات</item>
+        <item>سورة النبأ</item>
+        <item>سورة النازعات</item>
+        <item>سورة عبس</item>
+        <item>سورة التكوير</item>
+        <item>سورة الإنفطار</item>
+        <item>سورة المطفّفين</item>
+        <item>سورة الإنشقاق</item>
+        <item>سورة البروج</item>
+        <item>سورة الطارق</item>
+        <item>سورة الأعلى</item>
+        <item>سورة الغاشية</item>
+        <item>سورة الفجر</item>
+        <item>سورة البلد</item>
+        <item>سورة الشمس</item>
+        <item>سورة الليل</item>
+        <item>سورة الضحى</item>
+        <item>سورة الشرح</item>
+        <item>سورة التين</item>
+        <item>سورة العلق</item>
+        <item>سورة القدر</item>
+        <item>سورة البينة</item>
+        <item>سورة الزلزلة</item>
+        <item>سورة العاديات</item>
+        <item>سورة القارعة</item>
+        <item>سورة التكاثر</item>
+        <item>سورة العصر</item>
+        <item>سورة الهمزة</item>
+        <item>سورة الفيل</item>
+        <item>سورة قريش</item>
+        <item>سورة الكوثر</item>
+        <item> سورة الكافرون</item>
+        <item>سورة النصر</item>
+        <item>سورة المسد</item>
+        <item>سورة الإخلاص</item>
+        <item>سورة الفلق</item>
+        <item>سورة النّاس</item>
     </string-array>
     <string name="base_url">https://quran.islamway.net/quran3/324/</string>
     <string name="title_activity_main_display">MainActivityDisplay</string>

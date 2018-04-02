@@ -83,6 +83,8 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 mPlayListListener.onItemListClicked(surahslst.get(position),position,(FabButton)viewHolder.getBtnPlay());
             }
         });
+        //Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "ae_cortoba.ttf");
+        //((TextView)viewHolder.getView().findViewById(R.id.tvTitleAr)).setTypeface(typeface);
         setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
         viewHolder.getBtnDownload().setOnClickListener(new View.OnClickListener() {
             @Override

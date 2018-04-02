@@ -27,12 +27,25 @@
             android:paddingEnd="24dp">
 
             <TextView
-                android:id="@+id/tvTitle"
+                android:id="@+id/tvTitleAr"
+                android:paddingTop="18dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:textColor="@color/colorIcons"
+                android:textSize="24sp"
+                android:fontFamily="@font/bf_antezy"
+                android:text="سُورَةُ الْفَاتِحَة"/>
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:paddingTop="4dp"
+                android:paddingBottom="14dp"
+                android:layout_below="@id/tvTitleAr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorSecondary_text"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Al Fatiha" />

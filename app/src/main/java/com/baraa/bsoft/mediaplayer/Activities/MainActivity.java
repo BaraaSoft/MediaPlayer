@@ -145,9 +145,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mBtnbackwardUI.setOnClickListener(this);
         mSeekBar =(SeekBar)findViewById(R.id.seekBar);
         mSeekBar.setOnSeekBarChangeListener(this);
-        mImgSeletedShk = findViewById(R.id.imgSelectedShk);
-        mImgCurrentShk = findViewById(R.id.imgCurrentShk);
-        mTvSelectedShk = findViewById(R.id.tvSelectedShk);
 
 
         mSurahs = mDataBuilder.builSurahList(mArtists.get(0));
@@ -182,9 +179,13 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
             if(intent.getAction().equals(PlayService.ACTION_IS_PLAYING)){
                 boolean isPlaying = intent.getExtras().getBoolean(PlayService.DATA_IS_PLAYING);
                 if(isPlaying){ // stop progress animation when start playing
-                    mProgressHelper.stopIndeterminate();
-                    mBtnPlayUI.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle_outline_white_24dp));
-                    lastPlayButton.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
+                    if(mProgressHelper !=null && lastPlayButton != null){
+                        mProgressHelper.stopIndeterminate();
+                        lastPlayButton.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
+                    }
+                    if(mBtnPlayUI !=null)
+                        mBtnPlayUI.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_circle_outline_white_24dp));
+
                     if(isServiceBound){
                         mSeekBar.setMax(mBoundService.getMediaDuration());
                     }
@@ -200,8 +201,6 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
                     mThreadSeekBar.start();
                 }
             }
-            // change the state of listPlayIcon from notification
-            //if()
         }
     };
     private void registeringReceiver(){
@@ -447,9 +446,15 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mSurahs = mDataBuilder.builSurahList(artist);
         mSurahAdapter.updateData(mSurahs);
 
-        mImgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
-        mImgCurrentShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
-        mTvSelectedShk.setText(artist.getName());
+        mImgSeletedShk = findViewById(R.id.imgSelectedShk);
+        mImgCurrentShk = findViewById(R.id.imgCurrentShk);
+        mTvSelectedShk = findViewById(R.id.tvSelectedShk);
+
+        if(artist !=null){
+            mImgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
+            mImgCurrentShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
+            mTvSelectedShk.setText(artist.getName());
+        }
     }
 
 }
