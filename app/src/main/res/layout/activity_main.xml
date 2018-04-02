@@ -30,7 +30,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/llStatus"
         android:layout_toEndOf="@id/llStatus"
-        android:background="@color/colorDarkSilentLight"
+        android:background="@drawable/play_background"
         android:orientation="horizontal"
         android:paddingLeft="54dp"
         android:paddingRight="54dp"

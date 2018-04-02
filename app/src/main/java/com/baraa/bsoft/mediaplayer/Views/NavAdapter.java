@@ -52,6 +52,7 @@ public class NavAdapter extends ArrayAdapter {
         }
         final Artist artist = mArtists.get(position);
         viewHolder.getTvShk().setText(artist.getName());
+        viewHolder.getTvShkArabic().setText(artist.getNameArabic());
         viewHolder.getImgShk().setImageDrawable(ContextCompat.getDrawable(mContext,artist.getImageResourceId()));
         viewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,11 +73,13 @@ public class NavAdapter extends ArrayAdapter {
         private View view;
         private ImageView imgShk;
         private TextView tvShk;
+        private TextView tvShkArabic;
 
         public ViewHolder(View view) {
             this.view = view;
             this.imgShk = (ImageView)view.findViewById(R.id.imgShk);
             this.tvShk = (TextView)view.findViewById(R.id.tvShk);
+            this.tvShkArabic = (TextView)view.findViewById(R.id.tvShkArabic);
         }
 
         public ImageView getImgShk() {
@@ -89,6 +92,10 @@ public class NavAdapter extends ArrayAdapter {
 
         public View getView() {
             return view;
+        }
+
+        public TextView getTvShkArabic() {
+            return tvShkArabic;
         }
     }
 }

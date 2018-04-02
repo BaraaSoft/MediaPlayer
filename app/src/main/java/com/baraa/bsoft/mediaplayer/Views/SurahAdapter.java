@@ -77,14 +77,13 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         final Surah surah = surahslst.get(position);
         //Log.d(TAG, "getView: "+surah.toString());
         viewHolder.getTvTitle().setText(surah.getTitle());
+        viewHolder.getTvTitleArabic().setText(surah.getTitleArabic());
         viewHolder.getBtnPlay().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mPlayListListener.onItemListClicked(surahslst.get(position),position,(FabButton)viewHolder.getBtnPlay());
             }
         });
-        //Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "ae_cortoba.ttf");
-        //((TextView)viewHolder.getView().findViewById(R.id.tvTitleAr)).setTypeface(typeface);
         setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
         viewHolder.getBtnDownload().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +209,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         public FabButton btnPlay;
         private FabButton btnDownload;
         private CardView cvMain;
+        private TextView tvTitleArabic;
         private View view;
 
         public View getView() {
@@ -221,6 +221,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
             this.btnPlay = (FabButton) view.findViewById(R.id.btnPlayLst);
             this.cvMain = (CardView)view.findViewById(R.id.cvMain);
             this.btnDownload = (FabButton)view.findViewById(R.id.btnDownloadLst);
+            this.tvTitleArabic = (TextView)view.findViewById(R.id.tvTitleAr);
             this.view = view;
         }
 
@@ -239,5 +240,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         public FabButton getBtnDownload() {
             return btnDownload;
         }
+
+        public TextView getTvTitleArabic() {return tvTitleArabic;}
     }
 }

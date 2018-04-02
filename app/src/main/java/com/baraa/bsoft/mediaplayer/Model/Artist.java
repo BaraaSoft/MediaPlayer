@@ -14,6 +14,7 @@ public class Artist extends RealmObject implements Serializable {
     private String key;
     private int imageResourceId;
     private String name;
+    private String nameArabic;
     private String basUrl1;
     private String basUrl2;
 
@@ -42,6 +43,12 @@ public class Artist extends RealmObject implements Serializable {
         this.name = name;
         this.basUrl1 = url1;
         this.basUrl2 = url2;
+    }
+
+
+    public Artist(String key, int imageResourceId, String name,String url1,String url2,String nameAr) {
+        this(key,imageResourceId,name,url1,url2);
+        this.nameArabic = nameAr;
     }
 
 
@@ -82,5 +89,13 @@ public class Artist extends RealmObject implements Serializable {
 
     public void setBasUrl2(String basUrl2) {
         this.basUrl2 = basUrl2;
+    }
+
+    public String getNameArabic() {
+        return nameArabic;
+    }
+
+    public void setNameArabic(String nameArabic) {
+        this.nameArabic = nameArabic;
     }
 }

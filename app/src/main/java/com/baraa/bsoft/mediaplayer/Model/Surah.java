@@ -17,6 +17,7 @@ public class Surah extends RealmObject implements Serializable{
 
     private String localPath;
     private String title;
+    private String titleArabic;
     private String url;
     private int number;
     private boolean stored;
@@ -38,6 +39,11 @@ public class Surah extends RealmObject implements Serializable{
         this.isPlaying = false;
         this.artistKey = artistKey;
     }
+    public Surah(String title, String url, int number,String artistKey,String titleArabic){
+         this(title,url,number,artistKey);
+         this.titleArabic = titleArabic;
+    }
+
 
     public String getTitle() {
         return title;
@@ -108,5 +114,13 @@ public class Surah extends RealmObject implements Serializable{
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+
+    public String getTitleArabic() {
+        return titleArabic;
+    }
+
+    public void setTitleArabic(String titleArabic) {
+        this.titleArabic = titleArabic;
     }
 }

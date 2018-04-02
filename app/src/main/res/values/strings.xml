@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Media Player</string>
+    <string name="app_name">Quran</string>
     <string-array name="surahs">
         <item>Al-Fatihah</item>
         <item>Al-Baqarah</item>
@@ -114,10 +114,10 @@
         <item>Al-Masad</item>
         <item>Al-Ikhlas</item>
         <item>Al-Falaq</item>
-        <item>Surat An-Nas</item>
+        <item>An-Nas</item>
     </string-array>
     <string-array name="surahs_arabic">
-        <item>Al-Fatihah</item>
+        <item>سُورَةُ الْفَاتِحَة</item>
         <item>سورة البقرة</item>
         <item>سورة آل عمران</item>
         <item>سورة النساء</item>
@@ -223,6 +223,7 @@
         <item>سورة الهمزة</item>
         <item>سورة الفيل</item>
         <item>سورة قريش</item>
+        <item>سورة الماعون</item>
         <item>سورة الكوثر</item>
         <item> سورة الكافرون</item>
         <item>سورة النصر</item>
@@ -252,4 +253,17 @@
     <string name="shk_alzain_mohamed">Alzain Mohamed</string>
     <string name="shk_mohamed_samad">Mohamed Abdus Samad</string>
     <string name="shk_abdul_rashid_sufi">Abdul Rashid Sufi</string>
+
+    <string name="shk_ar_muhammad_abdulkareem">محمد عبد الكريم</string>
+    <string name="shk_ar_alafasy">العفاسي</string>
+    <string name="shk_ar_maher_almueaqly">ماهر المعيقلي</string>
+    <string name="shk_ar_ahmad_bin_ali_alajmy">احمد العجمي</string>
+    <string name="shk_ar_ali_huthaify">علي الحذيفي</string>
+    <string name="shk_ar_saad_al_ghamidi">سعد الغامدي</string>
+    <string name="shk_ar_al_sudais">عبد الرحمن السديس</string>
+    <string name="shk_ar_saud_al_shuraim">سعودالشريم</string>
+    <string name="shk_ar_siddiq_el_minshawi">محمد الصديق المنشاوي</string>
+    <string name="shk_ar_alzain_mohamed">الزين محمد احمد</string>
+    <string name="shk_ar_mohamed_samad">عبد الباسط عبد الصمد</string>
+    <string name="shk_ar_abdul_rashid_sufi">عبد الرشيد علي صوفي</string>
 </resources>
