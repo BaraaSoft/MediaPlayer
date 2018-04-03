@@ -40,7 +40,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     private MediaPlayer mMediaPlayer;
     private int mSoundVolume = 0;
     // notification vars
-    private String mSubTitle = "",mTitle = "";
+    private String mSubTitle = "",mTitle = "",mTitleArabic="";
     int mImgRes = R.drawable.shk_muhammad_abdulkareem_bezzy;
 
 
@@ -71,11 +71,12 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 String url = intent.getExtras().getString(DATA_URL);
                 mSubTitle = intent.getExtras().getString(Constants.NOTIFICATION_ID.SUD_TEXT);
                 mTitle = intent.getExtras().getString(Constants.NOTIFICATION_ID.TITLE);
+                mTitleArabic = intent.getExtras().getString(Constants.NOTIFICATION_ID.TITLE_AR);
                 mImgRes = intent.getExtras().getInt(Constants.NOTIFICATION_ID.IMG);
                 playStream(url,false);
             }
 
-            showNotification(mImgRes,mTitle,mSubTitle);
+            showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
             Log.d(TAG, "onStartCommand: < Start foreground Service > ");
         }
         else if(intent.getAction().equals(Constants.ACTION.ACTION_PLAY)){
@@ -88,15 +89,16 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
             if (media == null) return START_STICKY;
             int currentIndex = media.getIndex();
             Log.d(TAG, "onStartCommand:"+currentIndex);
-            if(currentIndex +1 < 51){
+            if(currentIndex +1 < 114){
                 String nextMediakey = (media.getIndex()+1)+media.getArtistKey();
                 Surah surah = DAL.getInstance().setContext(this).getSurah(nextMediakey);
                 DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey()
                         ,media.getIndex()+1,0));
                 mSubTitle = surah.getTitle();
+                mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
                 playStream(surah.getUrl(),false);
-                showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),surah.getTitle());
+                showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }
         }
         else if(intent.getAction().equals(Constants.ACTION.ACTION_PREV)){
@@ -110,9 +112,10 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey()
                         ,media.getIndex()-1,0));
                 mSubTitle = surah.getTitle();
+                mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
                 playStream(surah.getUrl(),false);
-                showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),surah.getTitle());
+                showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }
         }
         else if(intent.getAction().equals(Constants.ACTION.ACTION_STOP_FOREGROUND)){
@@ -123,7 +126,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         return START_STICKY;
     }
 
-    private void showNotification(int resImg,String appTitle,String surahTitle) {
+    private void showNotification(int resImg,String appTitle,String surahTitle,String titleArabic) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.ACTION_MAIN);
         notificationIntent.setClass(this, PlayService.class);
@@ -161,7 +164,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
              notification = new NotificationCompat.Builder(this, "101")
                     .setContentText(appTitle)
-                     .setContentTitle("Baraa")
+                     .setContentTitle(mTitleArabic)
                      .setContentText(surahTitle)
                      .setTicker("Listening to Quran")
                      .setSmallIcon(resImg)
@@ -201,12 +204,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     private void createChannel(NotificationManager notificationManager) {
         String name = "Quran";
         String description = "Notifications for Listening to Quran";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-//        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                .build();
-
+        int importance = NotificationManager.IMPORTANCE_LOW;
        
         NotificationChannel mChannel = new NotificationChannel("101", name, importance);
         mChannel.setDescription(description);
@@ -268,7 +266,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 requestAudioFocus_postO();
             }
             // to refresh notification icons & action
-            showNotification(mImgRes,mTitle,mSubTitle);
+            showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
             registerReceiver(mAudioBecomeNoisyReceiver, mIntentFilterNoisy);
         }
 
@@ -277,7 +275,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         if(mMediaPlayer != null){
             mMediaPlayer.pause();
             // to refresh notification icons & action
-            showNotification(mImgRes,mTitle,mSubTitle);
+            showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         }
     }
     public void stop(){
@@ -306,7 +304,9 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-
+        toggleUiPlayPauseIcon(isPlaying());
+        unregisterReceiver(mAudioBecomeNoisyReceiver);
+        showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         mAudioManager.abandonAudioFocus(afChangeListener);
     }
     @Override
@@ -364,7 +364,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         if (resultCode == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             // Start playback
             mMediaPlayer.start();
-            showNotification(mImgRes,mTitle,mSubTitle);
+            showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         }
     }
 
@@ -386,7 +386,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         int res = mAudioManager.requestAudioFocus(mFocusRequest);
         if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             mMediaPlayer.start();
-            showNotification(mImgRes,mTitle,mSubTitle);
+            showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         }
     }
 

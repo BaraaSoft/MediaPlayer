@@ -20,6 +20,7 @@ public class Constants {
         public static final int FOREGROUND_SERVICE = 1;
         public static final String IMG = "img";
         public static final String TITLE = "title";
+        public static final String TITLE_AR = "title_ar";
         public static final String SUD_TEXT = "sub_text";
     }
 }

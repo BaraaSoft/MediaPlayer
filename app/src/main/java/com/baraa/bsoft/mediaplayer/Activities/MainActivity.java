@@ -58,6 +58,11 @@ import mbanje.kurt.fabbutton.FabButton;
 *
 **/
 
+/** todo: fixing play previous song halt when coming back from notification to the app
+ *
+ *
+ */
+
 
 public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener,NavAdapter.NavListener,SeekBar.OnSeekBarChangeListener{
@@ -162,6 +167,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     protected void onResume() {
         super.onResume();
         registeringReceiver();
+        if(mProgressHelper !=null && lastPlayButton != null){
+            mProgressHelper.stopIndeterminate();
+            lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
+        }
 
     }
 
@@ -216,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         intent.putExtra(Constants.NOTIFICATION_ID.IMG,getArtistImgResWithID(surah.getArtistKey()));
         intent.putExtra(Constants.NOTIFICATION_ID.SUD_TEXT,surah.getTitle());
         intent.putExtra(Constants.NOTIFICATION_ID.TITLE,getResources().getString(R.string.notificationPlayTitle));
+        intent.putExtra(Constants.NOTIFICATION_ID.TITLE_AR,surah.getTitleArabic());
         intent.setAction(Constants.ACTION.ACTION_START_FOREGROUND);
         if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.O){
            // startForegroundService(intent);
