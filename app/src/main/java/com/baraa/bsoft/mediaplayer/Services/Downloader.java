@@ -26,12 +26,13 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     private DownloadProgressListener mProgressListener;
     private String mToken;
     private int progress = 0;
+    private String mSurahKey;
 
     private String mFilePath;
 
     public interface DownloadProgressListener{
-        void onDownloadFinnished(String tokenId,String path);
-        void onDownloadProgress(String tokenId,int progress);
+        void onDownloadFinnished(String tokenId,String path,String sKey);
+        void onDownloadProgress(String tokenId,int progress,String sKey);
         void onDownloadStarted(String tokenId);
     }
 
@@ -40,10 +41,11 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         mProgressListener = progressListener;
     }
 
-    public Downloader(Context context,DownloadProgressListener downloadProgressListener,String token) {
+    public Downloader(Context context,DownloadProgressListener downloadProgressListener,String token,String surahKey) {
         this.mContext = context;
         this.mToken = token;
         this.mProgressListener = downloadProgressListener;
+        this.mSurahKey = surahKey;
     }
 
     @Override
@@ -124,8 +126,8 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         }
         //Log.d(TAG, "onProgressUpdate: >>> "+values[0]);
 
-        if(values[0]%5 == 0 && values[0] != progress){
-            mProgressListener.onDownloadProgress(mToken,values[0]);
+        if(values[0]%2 == 0 && values[0] != progress){
+            mProgressListener.onDownloadProgress(mToken,values[0],mSurahKey);
         }
 
         progress = values[0];
@@ -141,7 +143,7 @@ public class Downloader extends AsyncTask<String,Integer,String> {
             Log.e(TAG, "onPostExecute: >>>"+result);
         }
         else{
-            mProgressListener.onDownloadFinnished(mToken,mFilePath);
+            mProgressListener.onDownloadFinnished(mToken,mFilePath,mSurahKey);
         }
     }
 

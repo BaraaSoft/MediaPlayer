@@ -8,7 +8,12 @@ public class DataStored extends RealmObject {
     private String key;
     private String localPath;
 
+
+    public DataStored() {
+    }
+
     public DataStored(String key, String localPath) {
+        this();
         this.key = key;
         this.localPath = localPath;
     }

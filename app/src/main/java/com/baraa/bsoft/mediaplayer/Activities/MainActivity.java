@@ -36,6 +36,7 @@ import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.DataAccess.DataBuilder;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.Model.CurrentMedia;
+import com.baraa.bsoft.mediaplayer.Model.DataStored;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.Constants;
@@ -266,8 +267,13 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         if(mCurrentPlayingPos != index || mCurrentArtistId != Integer.parseInt(surah.getArtistKey()) ){
             mProgressHelper.startIndeterminate();
 
-            if (surah.isStored()) surahUrl = mSurahs.get(index).getLocalPath();
-            else surahUrl = mSurahs.get(index).getUrl();
+            DataStored dataStored = DAL.getInstance().setContext(this).getDataStoredWithSurahKey(surah.getKey());
+            if(dataStored != null){
+                surahUrl = dataStored.getLocalPath();
+            }
+            else{
+                surahUrl = mSurahs.get(index).getUrl();
+            }
 
             startMediaPlayerService(surahUrl,mSurahs.get(index));
             view.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
@@ -468,6 +474,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
             mImgSeletedShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
             mImgCurrentShk.setImageDrawable(ContextCompat.getDrawable(getBaseContext(),artist.getImageResourceId()));
             mTvSelectedShk.setText(artist.getName());
+        }
+        if(mProgressHelper !=null && lastPlayButton != null){
+            mProgressHelper.stopIndeterminate();
+            lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
         }
     }
 

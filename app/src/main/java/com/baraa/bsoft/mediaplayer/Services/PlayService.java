@@ -26,6 +26,7 @@ import android.util.Log;
 import com.baraa.bsoft.mediaplayer.Activities.MainActivity;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.Model.CurrentMedia;
+import com.baraa.bsoft.mediaplayer.Model.DataStored;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 
@@ -98,8 +99,14 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
 
-                if(surah.isStored()) playStream(surah.getLocalPath(),false);
-                else playStream(surah.getUrl(),false);
+                // to play data stored in the device if existed
+                DataStored dataStored = DAL.getInstance().setContext(this).getDataStoredWithSurahKey(surah.getKey());
+                if(dataStored != null){
+                    playStream(dataStored.getLocalPath(),false);
+                }
+                else{
+                    playStream(surah.getUrl(),false);
+                }
 
                 showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }
@@ -118,8 +125,14 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
 
-                if(surah.isStored()) playStream(surah.getLocalPath(),false);
-                else playStream(surah.getUrl(),false);
+                // to play data stored in the device if existed
+                DataStored dataStored = DAL.getInstance().setContext(this).getDataStoredWithSurahKey(surah.getKey());
+                if(dataStored != null){
+                    playStream(dataStored.getLocalPath(),false);
+                }
+                else{
+                    playStream(surah.getUrl(),false);
+                }
 
                 showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }

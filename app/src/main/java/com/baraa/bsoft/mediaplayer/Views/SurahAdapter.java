@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.baraa.bsoft.mediaplayer.Activities.MainActivity;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
+import com.baraa.bsoft.mediaplayer.Model.DataStored;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 import com.baraa.bsoft.mediaplayer.Services.Downloader;
@@ -85,10 +86,10 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
             }
         });
 
-        if(surah.isStored())
+        if(DAL.getInstance().setContext(getContext()).getDataStoredWithSurahKey(surah.getKey()) != null)
             setDownloadIcon(viewHolder.getBtnDownload(),2);
         else
-            setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
+            setDownloadIcon(viewHolder.getBtnDownload(),0);
 
         viewHolder.getBtnDownload().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +134,9 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
     void setDownloadIcon(FabButton fabButton,int status){
         switch (status){
             case 0:
+                fabButton.setEnabled(true);
+                fabButton.setProgress(0);
+                fabButton.setVisibility(View.VISIBLE);
                 fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
                 break;
             case 1:
@@ -171,12 +175,12 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         if(!((MainActivity)getContext()).checkStoragePermissionBeforeAccess()){
             Toast.makeText(context,"Enable permission to download! ",Toast.LENGTH_LONG);
         }
-        Downloader downloader = new Downloader(context,this,surah.getKey());
+        Downloader downloader = new Downloader(context,this,surah.getKey(),surah.getKey());
         downloader.execute(surah.getUrl());
     }
 
     @Override
-    public void onDownloadFinnished(final String tokenId,String path) {
+    public void onDownloadFinnished(final String tokenId,String path,String skey) {
         ((MainActivity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -184,21 +188,23 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 DAL.getInstance().setContext(context).updateProgress(surah.getKey(),2);
                 FabButton fabButton = (FabButton) getViewByPosition(mMapViewDownload.get(tokenId),mListView).findViewById(R.id.btnDownloadLst);
                 setDownloadIcon(fabButton,2);
+
             }
         });
-        Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
-        surah.setStored(true);
-        surah.setLocalPath(path);
-        DAL.getInstance().setContext(context).insertOrUpdateSurah(surah);
-        notifyDataSetChanged();
+        DataStored dataStored = new DataStored(skey,path);
+        DAL.getInstance().setContext(getContext()).insertOrUpdateDataStored(dataStored);
+
+        Log.d(TAG, "onDownloadFinnished: THE STORED KEY :: ");
     }
 
     @Override
-    public void onDownloadProgress(String tokenId, int progress) {
+    public void onDownloadProgress(String tokenId, int progress,String skey) {
         if(progress == 0){
             return;
         }
-        updateViewDownloadProgress(mMapViewDownload.get(tokenId),(progress));
+        Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
+        if(progress <101 && surah.getKey().equals(skey))
+            updateViewDownloadProgress(mMapViewDownload.get(tokenId),(progress));
     }
 
     @Override
