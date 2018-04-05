@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quran</string>
+    <string name="app_name">Quran MP3 Companion</string>
     <string-array name="surahs">
         <item>Al-Fatihah</item>
         <item>Al-Baqarah</item>
@@ -238,7 +238,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
     <string name="notificationPlayTitle">Listening to Quran</string>
     <string name="title_quran_reciters">Popular Quran Reciters</string>
     <string name="shk_muhammad_abdulkareem">Muhammad Abdulkareem</string>

@@ -91,13 +91,16 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
             Log.d(TAG, "onStartCommand:"+currentIndex);
             if(currentIndex +1 < 114){
                 String nextMediakey = (media.getIndex()+1)+media.getArtistKey();
-                Surah surah = DAL.getInstance().setContext(this).getSurah(nextMediakey);
-                DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey()
-                        ,media.getIndex()+1,0));
+                Surah surah = DAL.getInstance().setContext(getApplicationContext()).getSurah(nextMediakey);
+                DAL.getInstance().setContext(getApplicationContext()).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey()
+                        ,media.getIndex()+1,0,"1"));
                 mSubTitle = surah.getTitle();
                 mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
-                playStream(surah.getUrl(),false);
+
+                if(surah.isStored()) playStream(surah.getLocalPath(),false);
+                else playStream(surah.getUrl(),false);
+
                 showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }
         }
@@ -110,11 +113,14 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 String nextMediakey = (media.getIndex()-1)+media.getArtistKey();
                 Surah surah = DAL.getInstance().setContext(this).getSurah(nextMediakey);
                 DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey()
-                        ,media.getIndex()-1,0));
+                        ,media.getIndex()-1,0,"1"));
                 mSubTitle = surah.getTitle();
                 mTitleArabic= surah.getTitleArabic();
                 Log.d(TAG, "onStartCommand: < Action Next > ::"+media.getIndex());
-                playStream(surah.getUrl(),false);
+
+                if(surah.isStored()) playStream(surah.getLocalPath(),false);
+                else playStream(surah.getUrl(),false);
+
                 showNotification(mImgRes,getResources().getString(R.string.notificationPlayTitle),mSubTitle,mTitleArabic);
             }
         }
@@ -185,7 +191,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                      .setContentTitle("Baraa")
                      .setContentText(surahTitle)
                      .setTicker("Listening to Quran")
-                     .setSmallIcon(resImg)
+                     .setSmallIcon(R.mipmap.app_icon)
                      .setLargeIcon(Bitmap.createScaledBitmap(notificationImg,100,100,false))
                      .setContentIntent(pendingIntent)
                      .setOngoing(false)
@@ -305,9 +311,10 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         toggleUiPlayPauseIcon(isPlaying());
-        unregisterReceiver(mAudioBecomeNoisyReceiver);
+       // unregisterReceiver(mAudioBecomeNoisyReceiver);
         showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
-        mAudioManager.abandonAudioFocus(afChangeListener);
+        if(afChangeListener !=null) mAudioManager.abandonAudioFocus(afChangeListener);
+
     }
     @Override
     public void onPrepared(MediaPlayer player) {
@@ -333,8 +340,10 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 case AudioManager.AUDIOFOCUS_LOSS:
                     //toggle();
                     pause();
+                    if(mAudioBecomeNoisyReceiver !=null){
+                        unregisterReceiver(mAudioBecomeNoisyReceiver);
+                    }
                     mAudioManager.abandonAudioFocus(afChangeListener);
-                    unregisterReceiver(mAudioBecomeNoisyReceiver);
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                     if(isPlaying()){

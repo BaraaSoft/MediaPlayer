@@ -19,12 +19,13 @@ public class CurrentMedia  extends RealmObject {
     public CurrentMedia() {
     }
 
-    public CurrentMedia(String surahkey, String artistKey,int index ,double progress) {
+    public CurrentMedia(String surahkey, String artistKey,int index ,double progress,String key) {
         this();
         this.surahkey = surahkey;
         this.artistKey = artistKey;
         this.progress = progress;
         this.index = index;
+        this.key = key;
     }
 
     public String getSurahkey() {

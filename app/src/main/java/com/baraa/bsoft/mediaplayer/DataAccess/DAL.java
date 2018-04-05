@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.baraa.bsoft.mediaplayer.Model.Artist;
 import com.baraa.bsoft.mediaplayer.Model.CurrentMedia;
+import com.baraa.bsoft.mediaplayer.Model.DataStored;
 import com.baraa.bsoft.mediaplayer.Model.Surah;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class DAL {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.d(TAG, "onError: \n"+error.toString());
+                //Log.d(TAG, "onError: \n"+error.toString());
             }
         });
 
@@ -80,22 +81,26 @@ public class DAL {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm bgRealm) {
-                bgRealm.insert(lst);
+                //bgRealm.insert(lst);
+                bgRealm.insertOrUpdate(lst);
             }
         }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 // Transaction was a success.
+                Log.d(TAG, "onSuccess: >>>>>>>>>>>>>>>>>>>><<<<<<<<<<<");
             }
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.d(TAG, "onError: \n"+error.toString());
+                Log.e(TAG, "onError: \n"+error.toString());
             }
         });
 
     }
+
+
 
     public void initMedia(){
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -115,7 +120,7 @@ public class DAL {
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
-                Log.e(TAG, "onError: >>>>>>>",error );
+                Log.d(TAG, "onError: >>>>>>>",error );
                 // Transaction failed and was automatically canceled.
             }
         });
@@ -140,7 +145,7 @@ public class DAL {
             @Override
             public void onError(Throwable error) {
                 // Transaction failed and was automatically canceled.
-                Log.d(TAG, "onError: >>> \n"+error.toString());
+                Log.e(TAG, "onError: >>> ??\n"+error.toString());
             }
         });
 
@@ -175,9 +180,64 @@ public class DAL {
         Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
         return surah.getProgress();
     }
+
+
+    public void insertOrUpdateSurah(final Surah surah){
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                //bgRealm.insert(lst);
+                bgRealm.insertOrUpdate(surah);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+                Log.d(TAG, "onSuccess: >>>>>>>>>>>> surah updated! <<<<<<<<<<<");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "onError: \n"+error.toString());
+            }
+        });
+
+    }
+
     public Surah getSurah(final String id){
         Surah surah = realm.where(Surah.class).equalTo("key", id).findFirst();
         return surah;
+    }
+
+
+    public void insertOrUpdateDataStored(final DataStored data){
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                //bgRealm.insert(lst);
+                bgRealm.insertOrUpdate(data);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                // Transaction was a success.
+                Log.d(TAG, "onSuccess: >>>>>>>>>>>> DataStoted updated! <<<<<<<<<<<");
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+                Log.e(TAG, "onError: \n"+error.toString());
+            }
+        });
+
+    }
+    public DataStored getDataStoredWithSurahKey(final String id){
+        DataStored data = realm.where(DataStored.class).equalTo("key", id).findFirst();
+        return data;
     }
 
 

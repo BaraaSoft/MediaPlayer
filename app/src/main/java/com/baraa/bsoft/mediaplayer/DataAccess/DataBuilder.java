@@ -15,12 +15,10 @@ import java.util.ArrayList;
 public class DataBuilder {
     private Context mContext;
     private ArrayList<Artist> mArtists;
-//    private SurahAdapter mSurahAdapter;
 
     public DataBuilder(Context ctx) {
         mContext = ctx;
         mArtists = new ArrayList<>();
-//        mSurahAdapter = surahAdapter;
         DAL.getInstance().setContext(mContext).insertListArtistToDB(buildArtistData());
     }
 
@@ -78,9 +76,6 @@ public class DataBuilder {
             String x = strBuilder.append(b).append(".mp3").toString();
             Surah item = new Surah(surahArry[i],x,i,artist.getKey(),surahsArabic[i]);
             surahs.add(item);
-//            if(mSurahAdapter != null){
-//                mSurahAdapter.notifyDataSetChanged();
-//            }
         }
         DAL.getInstance().setContext(mContext).insertListToDB(surahs);
         return surahs;

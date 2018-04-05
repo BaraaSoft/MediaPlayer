@@ -84,7 +84,12 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 mPlayListListener.onItemListClicked(surahslst.get(position),position,(FabButton)viewHolder.getBtnPlay());
             }
         });
-        setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
+
+        if(surah.isStored())
+            setDownloadIcon(viewHolder.getBtnDownload(),2);
+        else
+            setDownloadIcon(viewHolder.getBtnDownload(),surah.getProgress());
+
         viewHolder.getBtnDownload().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,9 +151,9 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
         View view = getViewByPosition(pos,mListView);
         if (view == null) return;
         //Log.d(TAG, "run: >>"+progress);
-        ((FabButton)view.findViewById(R.id.btnDownloadLst)).setProgress((float) progress);
-
-
+        FabButton fabButton = (FabButton)view.findViewById(R.id.btnDownloadLst);
+        fabButton.setProgress((float) progress);
+        setDownloadIcon(fabButton,1);
     }
     public View getViewByPosition(int pos, ListView listView) {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
@@ -171,7 +176,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
     }
 
     @Override
-    public void onDownloadFinnished(final String tokenId) {
+    public void onDownloadFinnished(final String tokenId,String path) {
         ((MainActivity)context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -181,6 +186,11 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 setDownloadIcon(fabButton,2);
             }
         });
+        Surah surah = surahslst.get(mMapViewDownload.get(tokenId));
+        surah.setStored(true);
+        surah.setLocalPath(path);
+        DAL.getInstance().setContext(context).insertOrUpdateSurah(surah);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -202,6 +212,7 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 setDownloadIcon(fabButton,1);
             }
         });
+
     }
 
     public class ViewHolder{

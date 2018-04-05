@@ -27,8 +27,10 @@ public class Downloader extends AsyncTask<String,Integer,String> {
     private String mToken;
     private int progress = 0;
 
+    private String mFilePath;
+
     public interface DownloadProgressListener{
-        void onDownloadFinnished(String tokenId);
+        void onDownloadFinnished(String tokenId,String path);
         void onDownloadProgress(String tokenId,int progress);
         void onDownloadStarted(String tokenId);
     }
@@ -77,9 +79,9 @@ public class Downloader extends AsyncTask<String,Integer,String> {
             int fileLength = connection.getContentLength();
 
             // download the file
-            String filePath = getPublicAlbumStorageDir("Quran").getAbsolutePath()+mToken+".mp3";
+            mFilePath = getPublicAlbumStorageDir("Quran").getAbsolutePath()+mToken+".mp3";
             input = connection.getInputStream();
-            output = new FileOutputStream(filePath);
+            output = new FileOutputStream(mFilePath);
             mProgressListener.onDownloadStarted(mToken);
 
             byte data[] = new byte[4096];
@@ -139,7 +141,7 @@ public class Downloader extends AsyncTask<String,Integer,String> {
             Log.e(TAG, "onPostExecute: >>>"+result);
         }
         else{
-            mProgressListener.onDownloadFinnished(mToken);
+            mProgressListener.onDownloadFinnished(mToken,mFilePath);
         }
     }
 

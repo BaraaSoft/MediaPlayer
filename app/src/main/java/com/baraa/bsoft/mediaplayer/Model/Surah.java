@@ -38,6 +38,7 @@ public class Surah extends RealmObject implements Serializable{
         this.stored = false;
         this.isPlaying = false;
         this.artistKey = artistKey;
+        this.localPath = null;
     }
     public Surah(String title, String url, int number,String artistKey,String titleArabic){
          this(title,url,number,artistKey);

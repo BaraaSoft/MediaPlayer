@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
 
     @Override
     public void onItemListClicked(Surah surah, int index, final FabButton view) {
-        final String surahUrl = mSurahs.get(index).getUrl();
+        String surahUrl = mSurahs.get(index).getUrl();
         if(lastPlayButton != null){
             lastPlayButton.setIcon(R.drawable.ic_play_circle_outline_white_24dp,R.drawable.ic_play_circle_outline_white_24dp);
         }
@@ -265,6 +265,10 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mProgressHelper = new ProgressHelper((FabButton) view,this,surah.getKey());
         if(mCurrentPlayingPos != index || mCurrentArtistId != Integer.parseInt(surah.getArtistKey()) ){
             mProgressHelper.startIndeterminate();
+
+            if (surah.isStored()) surahUrl = mSurahs.get(index).getLocalPath();
+            else surahUrl = mSurahs.get(index).getUrl();
+
             startMediaPlayerService(surahUrl,mSurahs.get(index));
             view.setIcon(R.drawable.ic_pause_circle_outline_white_24dp,R.drawable.ic_pause_circle_outline_white_24dp);
         }else {
@@ -281,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         Log.d(TAG, "onItemListClicked:: "+surah.getArtistKey());
         mCurrentArtistId = Integer.parseInt(surah.getArtistKey());
         lastPlayButton = view;
-        DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(surah.getKey(),surah.getArtistKey(),index,0));
+        DAL.getInstance().setContext(this).updateCurrentMedia(new CurrentMedia(mSurahs.get(index).getKey(),mSurahs.get(index).getArtistKey(),index,0,"1"));
     }
 
     @Override
@@ -407,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_activity_display, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -418,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_share) {
             return true;
         }
 
