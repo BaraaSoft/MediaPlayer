@@ -201,7 +201,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
         }else {
              notification = new NotificationCompat.Builder(this,"Quran")
                     .setContentText(appTitle)
-                     .setContentTitle("Baraa")
+                     .setContentTitle(mTitleArabic)
                      .setContentText(surahTitle)
                      .setTicker("Listening to Quran")
                      .setSmallIcon(R.mipmap.app_icon)
@@ -251,7 +251,13 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     @Override
     public void onDestroy() {
         stop();
-        //unregisterReceiver(mAudioBecomeNoisyReceiver);
+        if(mAudioBecomeNoisyReceiver !=null){
+            try {
+                unregisterReceiver(mAudioBecomeNoisyReceiver);
+            }catch ( Exception e){
+                Log.d(TAG, "onDestroy: >> Receiver not registered <<");
+            }
+        }
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         super.onDestroy();
@@ -324,7 +330,9 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         toggleUiPlayPauseIcon(isPlaying());
-       // unregisterReceiver(mAudioBecomeNoisyReceiver);
+//        if(mAudioBecomeNoisyReceiver !=null){
+//             unregisterReceiver(mAudioBecomeNoisyReceiver);
+//        }
         showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         if(afChangeListener !=null) mAudioManager.abandonAudioFocus(afChangeListener);
 

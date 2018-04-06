@@ -44,6 +44,10 @@ import com.baraa.bsoft.mediaplayer.Services.PlayService;
 import com.baraa.bsoft.mediaplayer.Views.NavAdapter;
 import com.baraa.bsoft.mediaplayer.Views.ProgressHelper;
 import com.baraa.bsoft.mediaplayer.Views.SurahAdapter;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 
@@ -53,9 +57,8 @@ import mbanje.kurt.fabbutton.FabButton;
 
 
 /*
-* unregister the LocalBroadcast dynamically:
-* MyApplication.getInstance().getApplicationContext().registerReceiver(sentReceiver, new IntentFilter(SENT));
-* MyApplication.getInstance().getApplicationContext().unregisterReceiver(this);
+*    SHA-1 certificate fingerprint:
+*    43:0D:4D:D0:9F:4F:7D:8F:17:83:90:2B:3C:E1:B2:1A:99:EB:1A:04
 *
 **/
 
@@ -68,6 +71,10 @@ import mbanje.kurt.fabbutton.FabButton;
 public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener,NavAdapter.NavListener,SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "MainActivity";
+    public static final String ADMOB_APP_ID = "ca-app-pub-2567796855926810~9087023625";
+    public static final String AD_UNIT_ID = "ca-app-pub-2567796855926810/2306827008";
+    private AdView mAdView;
+
     private ImageButton mBtnPlayUI;
     private ImageButton mBtnforwardUI;
     private ImageButton mBtnbackwardUI;
@@ -161,6 +168,18 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         lvClips.setAdapter(mSurahAdapter);
 
         DAL.getInstance().setContext(this).initMedia();
+
+        // Ads Mobs: ca-app-pub-2567796855926810~9087023625
+        // AdUnitId: ca-app-pub-2567796855926810/2306827008
+        MobileAds.initialize(this, ADMOB_APP_ID);
+        AdView adView = new AdView(this);
+        adView.setAdSize(AdSize.BANNER);
+        adView.setAdUnitId(AD_UNIT_ID);
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
     }
 
 

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "817124861257",
+    "firebase_url": "https://quran-mp3-companion.firebaseio.com",
+    "project_id": "quran-mp3-companion",
+    "storage_bucket": "quran-mp3-companion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817124861257:android:0caf71ad958b50c2",
+        "android_client_info": {
+          "package_name": "com.baraa.bsoft.mediaplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817124861257-3keutcebon6gl1ibckrj2h1j1qdhm44m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baraa.bsoft.mediaplayer",
+            "certificate_hash": "430d4dd09f4f7d8f1783902b3ce1b21a99eb1a04"
+          }
+        },
+        {
+          "client_id": "817124861257-mjnq90n98bqo44r1qen65o1lsm7r9ssi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeAJX3v7gItOGlEVD7AOI4TTOKSNpiLWY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817124861257-mjnq90n98bqo44r1qen65o1lsm7r9ssi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

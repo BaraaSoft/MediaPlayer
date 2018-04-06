@@ -81,7 +81,10 @@ public class Downloader extends AsyncTask<String,Integer,String> {
             int fileLength = connection.getContentLength();
 
             // download the file
-            mFilePath = getPublicAlbumStorageDir("Quran").getAbsolutePath()+mToken+".mp3";
+           // mFilePath = getPublicAlbumStorageDir("Quran").getAbsolutePath()+mToken+".mp3";
+
+            mFilePath = getStorageDir("Quran").getAbsoluteFile()+File.separator+mToken+".mp3";
+
             input = connection.getInputStream();
             output = new FileOutputStream(mFilePath);
             mProgressListener.onDownloadStarted(mToken);
@@ -153,6 +156,22 @@ public class Downloader extends AsyncTask<String,Integer,String> {
         try {
             file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS), albumName);
+            if (!file.mkdirs()) {
+                Log.e(TAG, "Directory not created");
+            }
+        }catch (Exception e){
+            Log.e(TAG, "getPublicAlbumStorageDir: ",e );
+        }
+
+        return file;
+    }
+
+
+    private File getStorageDir(String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = null;
+        try {
+            file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"system app"+File.separator+albumName);
             if (!file.mkdirs()) {
                 Log.e(TAG, "Directory not created");
             }

@@ -24,7 +24,6 @@
                 android:background="?attr/colorPrimary"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-            <!--app:popupTheme="@style/AppThemeToolbar"-->
             <ImageView
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="40dp"
@@ -56,5 +55,6 @@
         <!--android:layout_gravity="bottom|end"-->
         <!--android:layout_margin="@dimen/fab_margin"-->
         <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
+
 
 </android.support.design.widget.CoordinatorLayout>
