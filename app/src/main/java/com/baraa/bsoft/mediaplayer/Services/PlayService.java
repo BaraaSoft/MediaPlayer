@@ -250,7 +250,6 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onDestroy() {
-        stop();
         if(mAudioBecomeNoisyReceiver !=null){
             try {
                 unregisterReceiver(mAudioBecomeNoisyReceiver);
@@ -258,8 +257,8 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 Log.d(TAG, "onDestroy: >> Receiver not registered <<");
             }
         }
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+//        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.cancelAll();
         super.onDestroy();
     }
 
@@ -267,6 +266,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     public void playStream(String url, boolean toggleUiPlayPause){
         if (mMediaPlayer !=null){
             mMediaPlayer.stop();
+            mMediaPlayer.reset(); // new
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
@@ -306,6 +306,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
     public void stop(){
         if (mMediaPlayer != null){
             mMediaPlayer.stop();
+            mMediaPlayer.reset(); // new
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
@@ -335,7 +336,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 //        }
         showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
         if(afChangeListener !=null) mAudioManager.abandonAudioFocus(afChangeListener);
-
+        stop();
     }
     @Override
     public void onPrepared(MediaPlayer player) {
@@ -362,7 +363,11 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                     //toggle();
                     pause();
                     if(mAudioBecomeNoisyReceiver !=null){
-                        unregisterReceiver(mAudioBecomeNoisyReceiver);
+                        try {
+                            unregisterReceiver(mAudioBecomeNoisyReceiver);
+                        }catch ( IllegalArgumentException e){
+                            Log.d(TAG, "AudioManager.AUDIOFOCUS_LOSS: >> AudioBecomeNoisyReceiver Receiver not registered <<");
+                        }
                     }
                     mAudioManager.abandonAudioFocus(afChangeListener);
                     break;
