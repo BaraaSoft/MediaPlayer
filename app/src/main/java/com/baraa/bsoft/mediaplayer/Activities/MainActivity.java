@@ -180,6 +180,8 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+
+
     }
 
 

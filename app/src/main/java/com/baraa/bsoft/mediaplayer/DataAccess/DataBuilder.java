@@ -7,6 +7,7 @@ import com.baraa.bsoft.mediaplayer.Model.Surah;
 import com.baraa.bsoft.mediaplayer.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by baraa on 24/03/2018.
@@ -69,10 +70,10 @@ public class DataBuilder {
         String baseUrl = artist.getBasUrl1();
         String[] surahArry = mContext.getResources().getStringArray(R.array.surahs);
         String[] surahsArabic = mContext.getResources().getStringArray(R.array.surahs_arabic);
-        String decm = String.format("%03d",0);
+        String decm = String.format(Locale.US,"%03d",0);
         for (int i=0;i<surahArry.length;i++){
             StringBuilder strBuilder = new StringBuilder(baseUrl);
-            String b = String.format("%03d",i+1);
+            String b = String.format(Locale.US,"%03d",i+1);
             String x = strBuilder.append(b).append(".mp3").toString();
             Surah item = new Surah(surahArry[i],x,i,artist.getKey(),surahsArabic[i]);
             surahs.add(item);

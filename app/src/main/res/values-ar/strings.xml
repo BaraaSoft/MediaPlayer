@@ -1,0 +1,269 @@
+<resources>
+    <string name="app_name">Quran MP3 Companion</string>
+    <string-array name="surahs">
+        <item>Al-Fatihah</item>
+        <item>Al-Baqarah</item>
+        <item>Ali \'Imran</item>
+        <item>An-Nisa</item>
+        <item>Al-Ma\'idah</item>
+        <item>Al-An\'am</item>
+        <item>Al-A\'raf</item>
+        <item>Al-Anfal</item>
+        <item>At-Tawbah</item>
+        <item>Yunus</item>
+        <item>Hud</item>
+        <item>Yusuf</item>
+        <item>Ar-Ra\'d</item>
+        <item>Ibrahim</item>
+        <item>Al-Hijr</item>
+        <item>An-Nahl</item>
+        <item>Bani Isra\'il</item>
+        <item>Al-Kahf</item>
+        <item>Maryam</item>
+        <item>Ta Ha</item>
+        <item>Al-Anbiya\'</item>
+        <item>Al-Hajj</item>
+        <item>Al-Mu\'minun</item>
+        <item>An-Nur</item>
+        <item>Al-Furqan</item>
+        <item>Ash-Shu\'ara\'</item>
+        <item>An-Naml</item>
+        <item>Al-Qasas</item>
+        <item>Al-\'Ankabut</item>
+        <item>Ar-Rum</item>
+        <item>Luqman</item>
+        <item>As-Sajdah</item>
+        <item>Al-Ahzab</item>
+        <item>Al-Saba\'</item>
+        <item>Al-Fatir</item>
+        <item>Ya Sin</item>
+        <item>As-Saffat</item>
+        <item>Sad</item>
+        <item>Az-Zumar</item>
+        <item>Ghafir</item>
+        <item>Fussilat</item>
+        <item>Ash-Shura</item>
+        <item>Az-Zukhruf</item>
+        <item>Ad-Dukhan</item>
+        <item>Al-Jathiyah</item>
+        <item>Al-Ahqaf</item>
+        <item>Muhammad</item>
+        <item>Al-Fath</item>
+        <item>Al-Hujurat</item>
+        <item>Qaf</item>
+        <item>Ad-Dhariyat</item>
+        <item>At-Tur</item>
+        <item>An-Najm</item>
+        <item>Al-Qamar</item>
+        <item>Ar-Rahman</item>
+        <item>Al-Waqi\'ah</item>
+        <item>Al-Hadid</item>
+        <item>Al-Mujadilah</item>
+        <item>Al-Hashr</item>
+        <item>Al-Mumtahanah</item>
+        <item>As-Saff</item>
+        <item>Al-Jumu\'ah</item>
+        <item>Al-Munafiqun</item>
+        <item>At-Taghabun</item>
+        <item>At-Talaq</item>
+        <item>At-Tahrim</item>
+        <item>Al-Mulk</item>
+        <item>Al-Qalam</item>
+        <item>Al-Haqqah</item>
+        <item>Al-Ma\'arij</item>
+        <item>Nuh</item>
+        <item>Al-Jinn</item>
+        <item>Al-Muzzammil</item>
+        <item>Al-Muddaththir</item>
+        <item>Al-Qiyamah</item>
+        <item>Al-Insan</item>
+        <item>Al-Mursalat</item>
+        <item>An-Naba\'</item>
+        <item>An-Nazi\'at</item>
+        <item>\'Abasa</item>
+        <item>At-Takwir</item>
+        <item>Al-Infitar</item>
+        <item>Al-Mutaffifin</item>
+        <item>Al-Inshiqaq</item>
+        <item>Al-Burooj</item>
+        <item>At-Tariq</item>
+        <item>Al-A\'la</item>
+        <item>Al-Ghashiyah</item>
+        <item>Al-Fajr</item>
+        <item>Al-Balad</item>
+        <item>Ash-Shams</item>
+        <item>Al-Layl</item>
+        <item>Ad-Duhaa</item>
+        <item>Ash-Sharh</item>
+        <item>At-Tin</item>
+        <item>Al-Alaq</item>
+        <item>Al-Qadr</item>
+        <item>Al-Bayyina</item>
+        <item>Az-Zalzalah</item>
+        <item>Al-Adiyat</item>
+        <item>Al-Qariah</item>
+        <item>At-Takathur</item>
+        <item>Al-Asr</item>
+        <item>Al-Humazah</item>
+        <item>Al-Fil</item>
+        <item>Quraysh</item>
+        <item>Al-Maun</item>
+        <item>Al-Kawthar</item>
+        <item>Al-Kafirun</item>
+        <item>An-Nasr</item>
+        <item>Al-Masad</item>
+        <item>Al-Ikhlas</item>
+        <item>Al-Falaq</item>
+        <item>An-Nas</item>
+    </string-array>
+    <string-array name="surahs_arabic">
+        <item>سُورَةُ الْفَاتِحَة</item>
+        <item>سورة البقرة</item>
+        <item>سورة آل عمران</item>
+        <item>سورة النساء</item>
+        <item>سورة المائدة</item>
+        <item>سورة الأنعام</item>
+        <item>سورة الأعراف</item>
+        <item>سورة الأنفال</item>
+        <item>سورة التوبة</item>
+        <item>سورة يونس</item>
+        <item>سورة هود</item>
+        <item>سورة يوسف</item>
+        <item>سورة الرعد</item>
+        <item>سورة إبراهيم</item>
+        <item>سورة الحجر</item>
+        <item>سورة النحل</item>
+        <item>سورة الإسراء</item>
+        <item>سورة الكهف</item>
+        <item>سورة مريم</item>
+        <item>سورة طه</item>
+        <item>سورة الأنبياء</item>
+        <item>سورة الحج</item>
+        <item>سورة المؤمنون</item>
+        <item>سورة النّور</item>
+        <item>سورة الفرقان</item>
+        <item>سورة الشعراء</item>
+        <item>سورة النّمل</item>
+        <item>سورة القصص</item>
+        <item>سورة العنكبوت</item>
+        <item>سورة الرّوم</item>
+        <item>سورة لقمان</item>
+        <item>سورة السجدة</item>
+        <item>سورة الأحزاب</item>
+        <item>سورة سبأ</item>
+        <item>سورة فاطر</item>
+        <item>سورة يس</item>
+        <item>سورة الصافات</item>
+        <item>سورة ص</item>
+        <item>سورة الزمر</item>
+        <item>سورة غافر</item>
+        <item>سورة فصّلت</item>
+        <item>سورة الشورى</item>
+        <item>سورة الزخرف</item>
+        <item>سورة الدّخان</item>
+        <item>سورة الجاثية</item>
+        <item>سورة الأحقاف</item>
+        <item>سورة محمد</item>
+        <item>سورة الفتح</item>
+        <item>سورة الحجرات</item>
+        <item>سورة ق</item>
+        <item>سورة الذاريات</item>
+        <item>سورة الطور</item>
+        <item>سورة النجم</item>
+        <item>سورة القمر</item>
+        <item>سورة الرحمن</item>
+        <item>سورة الواقعة</item>
+        <item>سورة الحديد</item>
+        <item>سورة المجادلة</item>
+        <item>سورة الحشر</item>
+        <item>سورة الممتحنة</item>
+        <item>سورة الصف</item>
+        <item>سورة الجمعة</item>
+        <item>سورة المنافقون</item>
+        <item>سورة التغابن</item>
+        <item>سورة الطلاق</item>
+        <item>سورة التحريم</item>
+        <item>سورة الملك</item>
+        <item>سورة القلم</item>
+        <item>سورة الحاقة</item>
+        <item>سورة المعارج</item>
+        <item>سورة نوح</item>
+        <item>سورة الجن</item>
+        <item>سورة المزّمّل</item>
+        <item>سورة المدّثر</item>
+        <item>سورة القيامة</item>
+        <item>سورة الإنسان</item>
+        <item>سورة المرسلات</item>
+        <item>سورة النبأ</item>
+        <item>سورة النازعات</item>
+        <item>سورة عبس</item>
+        <item>سورة التكوير</item>
+        <item>سورة الإنفطار</item>
+        <item>سورة المطفّفين</item>
+        <item>سورة الإنشقاق</item>
+        <item>سورة البروج</item>
+        <item>سورة الطارق</item>
+        <item>سورة الأعلى</item>
+        <item>سورة الغاشية</item>
+        <item>سورة الفجر</item>
+        <item>سورة البلد</item>
+        <item>سورة الشمس</item>
+        <item>سورة الليل</item>
+        <item>سورة الضحى</item>
+        <item>سورة الشرح</item>
+        <item>سورة التين</item>
+        <item>سورة العلق</item>
+        <item>سورة القدر</item>
+        <item>سورة البينة</item>
+        <item>سورة الزلزلة</item>
+        <item>سورة العاديات</item>
+        <item>سورة القارعة</item>
+        <item>سورة التكاثر</item>
+        <item>سورة العصر</item>
+        <item>سورة الهمزة</item>
+        <item>سورة الفيل</item>
+        <item>سورة قريش</item>
+        <item>سورة الماعون</item>
+        <item>سورة الكوثر</item>
+        <item> سورة الكافرون</item>
+        <item>سورة النصر</item>
+        <item>سورة المسد</item>
+        <item>سورة الإخلاص</item>
+        <item>سورة الفلق</item>
+        <item>سورة النّاس</item>
+    </string-array>
+    <string name="base_url">https://quran.islamway.net/quran3/324/</string>
+    <string name="title_activity_main_display">MainActivityDisplay</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_share">Share</string>
+    <string name="notificationPlayTitle">Listening to Quran</string>
+    <string name="title_quran_reciters">Popular Quran Reciters</string>
+    <string name="shk_muhammad_abdulkareem">Muhammad Abdulkareem</string>
+    <string name="shk_alafasy">Alafasy</string>
+    <string name="shk_maher_almueaqly">Maher Almueaqly</string>
+    <string name="shk_ahmad_bin_ali_alajmy">Ahmad Alajmy</string>
+    <string name="shk_ali_huthaify">Ali Al Huthaify</string>
+    <string name="shk_saad_al_ghamidi">Saad Al Ghamidi</string>
+    <string name="shk_al_sudais">Abdul Rahman Al-Sudais</string>
+    <string name="shk_saud_al_shuraim">Saud Al-Shuraim</string>
+    <string name="shk_siddiq_el_minshawi">Siddiq El-Minshawi</string>
+    <string name="shk_alzain_mohamed">Alzain Mohamed</string>
+    <string name="shk_mohamed_samad">Mohamed Abdus Samad</string>
+    <string name="shk_abdul_rashid_sufi">Abdul Rashid Sufi</string>
+
+    <string name="shk_ar_muhammad_abdulkareem">محمد عبد الكريم</string>
+    <string name="shk_ar_alafasy">العفاسي</string>
+    <string name="shk_ar_maher_almueaqly">ماهر المعيقلي</string>
+    <string name="shk_ar_ahmad_bin_ali_alajmy">احمد العجمي</string>
+    <string name="shk_ar_ali_huthaify">علي الحذيفي</string>
+    <string name="shk_ar_saad_al_ghamidi">سعد الغامدي</string>
+    <string name="shk_ar_al_sudais">عبد الرحمن السديس</string>
+    <string name="shk_ar_saud_al_shuraim">سعودالشريم</string>
+    <string name="shk_ar_siddiq_el_minshawi">محمد الصديق المنشاوي</string>
+    <string name="shk_ar_alzain_mohamed">الزين محمد احمد</string>
+    <string name="shk_ar_mohamed_samad">عبد الباسط عبد الصمد</string>
+    <string name="shk_ar_abdul_rashid_sufi">عبد الرشيد علي صوفي</string>
+</resources>

@@ -32,8 +32,8 @@
         android:layout_toEndOf="@id/llStatus"
         android:background="@drawable/play_background"
         android:orientation="horizontal"
-        android:paddingLeft="54dp"
-        android:paddingRight="54dp"
+        android:paddingStart="54dp"
+        android:paddingEnd="54dp"
         android:weightSum="3">
         <ImageButton
             android:id="@+id/btnBackward"

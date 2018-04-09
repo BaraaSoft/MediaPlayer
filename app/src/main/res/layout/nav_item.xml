@@ -31,7 +31,7 @@
                 android:background="@android:color/transparent"
                 android:id="@+id/tvShkArabic"
                 android:layout_marginTop="@dimen/nav_margin_top_item_title"
-                android:layout_marginLeft="@dimen/nav_margin_left_item_title"
+                android:layout_marginStart="@dimen/nav_margin_left_item_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ae_cortoba"
@@ -41,7 +41,7 @@
                 android:id="@+id/tvShk"
                 android:textColor="@color/colorDivider"
                 android:layout_marginTop="@dimen/nav_margin_top_item_title"
-                android:layout_marginLeft="@dimen/nav_margin_left_item_title"
+                android:layout_marginStart="@dimen/nav_margin_left_item_title"
                 android:text="@string/shk_muhammad_abdulkareem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

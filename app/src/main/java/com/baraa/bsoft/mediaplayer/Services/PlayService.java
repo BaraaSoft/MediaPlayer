@@ -75,6 +75,7 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
                 mTitleArabic = intent.getExtras().getString(Constants.NOTIFICATION_ID.TITLE_AR);
                 mImgRes = intent.getExtras().getInt(Constants.NOTIFICATION_ID.IMG);
                 playStream(url,false);
+                Log.d(TAG, "onStartCommand: >>\n "+url);
             }
 
             showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
@@ -335,7 +336,9 @@ public class PlayService extends Service  implements MediaPlayer.OnPreparedListe
 //             unregisterReceiver(mAudioBecomeNoisyReceiver);
 //        }
         showNotification(mImgRes,mTitle,mSubTitle,mTitleArabic);
-        if(afChangeListener !=null) mAudioManager.abandonAudioFocus(afChangeListener);
+        if(afChangeListener !=null && mAudioManager != null ){
+            mAudioManager.abandonAudioFocus(afChangeListener);
+        }
         stop();
     }
     @Override

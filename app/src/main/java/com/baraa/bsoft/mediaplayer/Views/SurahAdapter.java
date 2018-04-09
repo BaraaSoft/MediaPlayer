@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -137,17 +138,20 @@ public class SurahAdapter extends ArrayAdapter implements Downloader.DownloadPro
                 fabButton.setEnabled(true);
                 fabButton.setProgress(0);
                 fabButton.setVisibility(View.VISIBLE);
-                fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
+                fabButton.setIcon(ContextCompat.getDrawable(context,R.drawable.ic_file_download_white_24dp),
+                        ContextCompat.getDrawable(context,R.drawable.ic_file_download_white_24dp));
                 break;
             case 1:
-                fabButton.setIcon(R.drawable.download_button_arrow,R.drawable.download_button_arrow);
+                fabButton.setIcon(ContextCompat.getDrawable(context,R.drawable.download_button_arrow),
+                        ContextCompat.getDrawable(context,R.drawable.download_button_arrow));
                 fabButton.setEnabled(false);
                 break;
             case 2:
                 fabButton.setVisibility(View.GONE);
                 break;
                 default:
-                    fabButton.setIcon(R.drawable.ic_file_download_white_24dp,R.drawable.ic_file_download_white_24dp);
+                    fabButton.setIcon(ContextCompat.getDrawable(context,R.drawable.ic_file_download_white_24dp),
+                            ContextCompat.getDrawable(context,R.drawable.ic_file_download_white_24dp));
         }
     }
     private void updateViewDownloadProgress(final int pos,final double progress){

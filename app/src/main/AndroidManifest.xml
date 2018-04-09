@@ -33,12 +33,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".Activities.MainActivityDisplay"
-            android:label="@string/title_activity_main_display"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true"></activity>
-
     </application>
 
 </manifest>
