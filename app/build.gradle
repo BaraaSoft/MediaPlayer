@@ -5,10 +5,10 @@ android {
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.baraa.bsoft.mediaplayer"
-        minSdkVersion 20
+        minSdkVersion 19
         targetSdkVersion 26
-        versionCode 7
-        versionName "1.7"
+        versionCode 8
+        versionName "1.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ads:12.0.1'
     implementation 'com.google.firebase:firebase-crash:12.0.1'
 
+    compile 'com.akexorcist:localizationactivity:1.2.2'
 
     compile 'mbanje.kurt:fabbutton:1.2.4@aar'
     //compile project(path: ':mlib')

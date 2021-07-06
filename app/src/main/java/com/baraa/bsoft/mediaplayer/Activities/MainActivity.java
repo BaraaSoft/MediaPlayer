@@ -20,7 +20,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +31,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.akexorcist.localizationactivity.ui.LocalizationActivity;
 import com.baraa.bsoft.mediaplayer.DataAccess.DAL;
 import com.baraa.bsoft.mediaplayer.DataAccess.DataBuilder;
 import com.baraa.bsoft.mediaplayer.Model.Artist;
@@ -68,7 +68,7 @@ import mbanje.kurt.fabbutton.FabButton;
  */
 
 
-public class MainActivity extends AppCompatActivity implements SurahAdapter.PlayListListener,View.OnClickListener,
+public class MainActivity extends LocalizationActivity implements SurahAdapter.PlayListListener,View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener,NavAdapter.NavListener,SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "MainActivity";
     public static final String ADMOB_APP_ID = "ca-app-pub-2567796855926810~9087023625";
@@ -116,8 +116,9 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setDefaultLanguage("en");
         setContentView(R.layout.activity_main_display);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         // Ads Mobs: ca-app-pub-2567796855926810~9087023625
         // AdUnitId: ca-app-pub-2567796855926810/2306827008
         MobileAds.initialize(this, ADMOB_APP_ID);
-        AdView adView = new AdView(this);
+        AdView adView = new AdView(getApplicationContext());
         adView.setAdSize(AdSize.BANNER);
         adView.setAdUnitId(AD_UNIT_ID);
 
@@ -181,12 +182,11 @@ public class MainActivity extends AppCompatActivity implements SurahAdapter.Play
         mAdView.loadAd(adRequest);
 
 
-
     }
 
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         registeringReceiver();
         if(mProgressHelper !=null && lastPlayButton != null){
